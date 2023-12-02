@@ -1,0 +1,30 @@
+package com.xd11z.myserver.controller;
+
+import com.alibaba.fastjson.JSON;
+import com.xd11z.myserver.annotation.UserLoginToken;
+import com.xd11z.myserver.data.*;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+//端口在：src\main\resources\application.properties修改！！！
+
+//测试类，用于验证后端已启动
+@RestController
+public class test {
+    @GetMapping("/hello")
+    public String run(){
+        return "后端已启动";
+    }
+
+    @UserLoginToken
+    @GetMapping("/test")
+    public String token(){
+        return "登录成功";
+    }
+
+}
+
