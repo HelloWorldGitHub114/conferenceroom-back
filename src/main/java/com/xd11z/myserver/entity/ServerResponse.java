@@ -1,9 +1,9 @@
-package com.xd11z.myserver.data;
+package com.xd11z.myserver.entity;
 import java.io.Serializable;
 
 /**
  * 标准的服务器响应类
- * code+data+msg
+ * code+entity+msg
  * 后端向前端的响应一定为该类型
  */
 public class ServerResponse implements Serializable {

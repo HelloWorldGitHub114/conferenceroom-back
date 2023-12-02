@@ -1,4 +1,4 @@
-package com.xd11z.myserver.tool;
+package com.xd11z.myserver.util;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -16,6 +16,6 @@ public class logger {
     }
 
     public static void write(String content){
-        write("./src/main/java/com/xd11z/myserver/tool/log.txt",content);
+        write("./src/main/java/com/xd11z/myserver/util/log.txt",content);
     }
 }

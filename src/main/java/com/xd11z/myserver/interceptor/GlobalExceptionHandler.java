@@ -1,6 +1,6 @@
 package com.xd11z.myserver.interceptor;
 
-import com.xd11z.myserver.data.ServerResponse;
+import com.xd11z.myserver.entity.ServerResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;

@@ -1,14 +1,15 @@
 package com.xd11z.myserver.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.xd11z.myserver.data.User;
-import com.xd11z.myserver.data.UserInfo;
-import com.xd11z.myserver.data.UserLogin;
-import com.xd11z.myserver.data.ServerResponse;
-import com.xd11z.myserver.tool.TokenTool;
-import com.xd11z.myserver.tool.UserTool;
-import com.xd11z.myserver.tool.logger;
+import com.xd11z.myserver.entity.User;
+import com.xd11z.myserver.entity.UserInfo;
+import com.xd11z.myserver.entity.UserLogin;
+import com.xd11z.myserver.entity.ServerResponse;
+import com.xd11z.myserver.service.UserService;
+import com.xd11z.myserver.util.TokenTool;
+import com.xd11z.myserver.util.logger;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 //登录类
 @RestController
 public class LoginController {
+    @Autowired
+    UserService userService;
+
     /**
      * 处理login的请求的函数
      * @param userLogin 前端传入的登录信息，包括username和password
@@ -24,10 +28,10 @@ public class LoginController {
     @PostMapping(value = "/login")
     public ServerResponse loginIn(@RequestBody UserLogin userLogin, HttpServletResponse response) {
         //记录到日志文件中，可以不写
-        logger.write("./src/main/java/com/xd11z/myserver/tool/log.txt", JSON.toJSONString(userLogin));
+        logger.write("./src/main/java/com/xd11z/myserver/util/log.txt", JSON.toJSONString(userLogin));
         //判断userLogin是否正确
         String msg = null;
-        User user = UserTool.CheckUserLogin(userLogin,msg);
+        User user = userService.CheckUserLogin(userLogin,msg);
         if(user.userID=="0" || user.userID=="1")
         {
             //在header附加上token，以后前端可以拿着这个来访问后端了（其实这里放在数据包里也可以）

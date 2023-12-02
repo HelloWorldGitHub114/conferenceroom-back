@@ -1,4 +1,4 @@
-package com.xd11z.myserver.data;
+package com.xd11z.myserver.entity;
 
 import java.io.Serializable;
 

@@ -1,15 +1,14 @@
-package com.xd11z.myserver.tool;
+package com.xd11z.myserver.dto;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 //本代码连接SQL Server，在用户登陆功能中被调用
 //注意连接字符串需要自己修改
-
+//数据库交互的类放dto里
 public class LoginJDBC {
     /**
      * 接收用户名+密码 连接数据库验证是否匹配

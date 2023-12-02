@@ -1,15 +1,11 @@
 package com.xd11z.myserver.interceptor;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.*;
+import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.xd11z.myserver.annotation.PassToken;
 import com.xd11z.myserver.annotation.UserLoginToken;
-import com.xd11z.myserver.data.User;
-import com.xd11z.myserver.tool.UserTool;
-import com.xd11z.myserver.tool.logger;
+import com.xd11z.myserver.util.TokenTool;
+import com.xd11z.myserver.util.logger;
 import org.springframework.lang.Nullable;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -61,24 +57,17 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 if (token == null) {
                     throw new RuntimeException("无token，请重新登录");
                 }
-                // 获取 token 中的 user id
-                String userID;
-                try {
-                    userID = JWT.decode(token).getAudience().get(0);
-                } catch (JWTDecodeException j) {
-                    throw new RuntimeException("错误的token");
-                }
-                //意思一下，这里就是看看有没有这个用户
-                User user = UserTool.findUserByID(userID);
-                if (user == null) {
-                    throw new RuntimeException("用户不存在，请重新登录");
-                }
                 // 验证 token
-                JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(user.getPassword())).build();
                 try {
-                    jwtVerifier.verify(token);
-                } catch (JWTVerificationException e) {
-                    throw new RuntimeException("错误的token");
+                    TokenTool.verify(token);
+                } catch (SignatureVerificationException e) {
+                    throw new RuntimeException("无效签名！");
+                }catch (TokenExpiredException e){
+                    throw new RuntimeException("token过期");
+                }catch (AlgorithmMismatchException e){
+                    throw new RuntimeException("算法不一致");
+                }catch (Exception e){
+                    throw new RuntimeException("token无效！");
                 }
                 return true;
             }
