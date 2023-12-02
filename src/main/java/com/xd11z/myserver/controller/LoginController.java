@@ -32,10 +32,15 @@ public class LoginController {
         //判断userLogin是否正确
         String msg = null;
         User user = userService.CheckUserLogin(userLogin,msg);
+        logger.write(JSON.toJSONString(user));
+
+        //明明可以用user==null和msg判断的，为什么要用这种方式？
+
         if(user.userID=="0" || user.userID=="1")
         {
             //在header附加上token，以后前端可以拿着这个来访问后端了（其实这里放在数据包里也可以）
             response.setHeader("Authorization", TokenTool.getToken(user));
+            response.setHeader("Access-control-Expose-Headers", "Authorization");
             //成功可以new一个用户信息对象，然后存到服务器应答包中返回
             UserInfo userInfo = user.getInfo();
             return ServerResponse.success(userInfo);
