@@ -1,4 +1,4 @@
-package com.xd11z.myserver.interceptor;
+package com.xd11z.myserver.myserver.interceptor;
 
 import com.auth0.jwt.exceptions.*;
 import com.auth0.jwt.exceptions.SignatureVerificationException;

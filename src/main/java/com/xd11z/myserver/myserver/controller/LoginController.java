@@ -1,4 +1,4 @@
-package com.xd11z.myserver.controller;
+package com.xd11z.myserver.myserver.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.xd11z.myserver.entity.ServerResponse;

@@ -1,4 +1,4 @@
-package com.xd11z.myserver.util;
+package com.xd11z.myserver.myserver.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

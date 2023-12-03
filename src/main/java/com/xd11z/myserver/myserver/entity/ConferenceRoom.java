@@ -1,4 +1,4 @@
-package com.xd11z.myserver.entity;
+package com.xd11z.myserver.myserver.entity;
 
 import java.io.Serializable;
 

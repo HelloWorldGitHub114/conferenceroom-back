@@ -1,4 +1,4 @@
-package com.xd11z.myserver.util;
+package com.xd11z.myserver.myserver.util;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

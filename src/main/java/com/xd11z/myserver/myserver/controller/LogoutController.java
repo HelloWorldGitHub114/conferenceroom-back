@@ -1,4 +1,4 @@
-package com.xd11z.myserver.controller;
+package com.xd11z.myserver.myserver.controller;
 
 import com.xd11z.myserver.annotation.UserLoginToken;
 import com.xd11z.myserver.entity.ServerResponse;
