@@ -11,7 +11,7 @@ public class LogoutController {
     @UserLoginToken
     @GetMapping("/logout")
     public ServerResponse logout(){
-        //处理一些逻辑，比如把服务端存储的token删了?不过目前的代码里服务器没有存token，都是现场计算token对不对
+        //处理一些逻辑，比如把服务端存储的token删了?不过由于使用了jwt技术，并不用存储token，这里先保留着。
         return ServerResponse.success("退出成功");
     }
 }
