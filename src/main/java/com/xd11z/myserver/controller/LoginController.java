@@ -34,7 +34,7 @@ public class LoginController {
         User user = userService.CheckUserLogin(userLogin,msg);
         logger.write(JSON.toJSONString(user));
 
-        //明明可以用user==null和msg判断的，为什么要用这种方式？
+        //明明可以用user==null和msg判断的，为什么要用这种方式？最好用equals判断等于
 
         if(user.userID=="0" || user.userID=="1")
         {
