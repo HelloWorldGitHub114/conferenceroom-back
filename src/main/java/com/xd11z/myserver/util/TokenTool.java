@@ -33,7 +33,8 @@ public class TokenTool {
     public static String getToken(User user) {
         return JWT.create()
                 .withClaim("userID",user.getUserID())// 将 user id 保存到 token 里面
-                .withClaim("userName",user.getUsername())// 将 username 保存到 token 里面
+                .withClaim("userName",user.getUsername())// 将 user name 保存到 token 里面
+                .withClaim("userRole",user.getRole())// 将 user role 保存到 token 里面
                 .sign(Algorithm.HMAC256(KEY));// 用KEY签名
     }
 
