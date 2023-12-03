@@ -2,7 +2,7 @@ package com.xd11z.myserver.service;
 
 import com.xd11z.myserver.entity.User;
 import com.xd11z.myserver.entity.UserLogin;
-import com.xd11z.myserver.dto.LoginJDBC;
+import com.xd11z.myserver.util.LoginJDBC;
 import org.springframework.stereotype.Service;
 
 /**
