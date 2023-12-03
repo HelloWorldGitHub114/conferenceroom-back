@@ -12,14 +12,16 @@ public class ConferenceRoom implements Serializable{
     public String roomFloor;
     public String roomType;
     public int roomSize;
+    public int roomArea;
     public int roomState;
 
-    public ConferenceRoom(String roomNo, String roomType, String roomFloor, int roomSize, int roomState) {
+    public ConferenceRoom(String roomNo, String roomName, String roomFloor, String roomType, int roomSize, int roomArea, int roomState) {
         this.roomNo = roomNo;
         this.roomName = roomName;
         this.roomFloor = roomFloor;
-        this.roomSize = roomSize;
         this.roomType = roomType;
+        this.roomSize = roomSize;
+        this.roomArea = roomArea;
         this.roomState = roomState;
     }
 }

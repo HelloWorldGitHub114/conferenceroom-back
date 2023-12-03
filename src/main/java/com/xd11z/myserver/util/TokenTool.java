@@ -49,4 +49,3 @@ public class TokenTool {
         return JWT.require(Algorithm.HMAC256(KEY)).build().verify(token);
     }
 }
-

@@ -1,13 +1,14 @@
 package com.xd11z.myserver.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.xd11z.myserver.entity.*;
-
+import com.xd11z.myserver.util.*;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 //Get请求均可通过"http://localhost:8080/XXX"直接查看后端的回复情况（需要参数）
 //返回体固定为ServerResponse类型，在data中定义
@@ -19,11 +20,21 @@ public class ConferenceRoomContreller
     @GetMapping("/listall")//展示所有会议室
     //返回值为ConferenceRoom的列表
     public ServerResponse getAllConferenceRooms() {
-        List<ConferenceRoom> conferenceRooms = Arrays.asList
-        (
-                new ConferenceRoom("114514", "大会议室tyyyy", "1", 50, 1),
-                new ConferenceRoom("1919810", "asdad", "2", 20, 1)
-        );
+        List<ConferenceRoom> conferenceRooms = ConferenceRoomJDBC.SearchAll();
+        return ServerResponse.success(conferenceRooms);
+    }
+
+    @GetMapping("listallonstate")
+    public  ServerResponse Getallonstate()
+    {
+        List<ConferenceRoom> conferenceRooms = ConferenceRoomJDBC.SearchAll();
+        return ServerResponse.success(conferenceRooms);
+    }
+
+    @GetMapping("getconditionsonstate")
+    public ServerResponse GetConditionsOnstate()
+    {
+        List<ConferenceRoom> conferenceRooms = ConferenceRoomJDBC.SearchAll();
         return ServerResponse.success(conferenceRooms);
     }
 
@@ -32,6 +43,12 @@ public class ConferenceRoomContreller
     public ServerResponse getconditions()
     {
         List<Map<String,Integer>> floors = new ArrayList<>();
+        Map<String,Integer> mp= new HashMap<>();
+        mp.put("roomFloor",1);
+        floors.add(mp);
+        mp= new HashMap<>();
+        mp.put("roomFloor",2);
+        floors.add(mp);
         List<Map<String,String>> types = new ArrayList<>();
         List<Map<String,Integer>> sizes = new ArrayList<>();
         return ServerResponse.success(new Conditions(floors,types,sizes));
@@ -39,10 +56,9 @@ public class ConferenceRoomContreller
 
     @PutMapping(value = "/changestate")//管理员修改会议室的可用状态
     public ServerResponse changeState(@RequestBody ConferenceRoom conferenceRoom)
-    {  
-        
-        boolean b=true;
-        if(b) return ServerResponse.success("修改成功");
+    {
+        boolean flg=ConferenceRoomJDBC.ChangeState(conferenceRoom);
+        if(flg) return ServerResponse.success("修改成功");
         else return ServerResponse.fail("修改失败");
     }
 }
