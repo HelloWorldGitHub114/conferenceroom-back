@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 public class User implements Serializable {
 
-    public String userID; //用户ID，这个不用返回给前端，仅用于后端处理，此处用于传状态码
+    public String userID; //用户ID，这个不用返回给前端，仅用于后端处理
     public String username; //用户名
     public String password; //密码
     public String role; //用户角色

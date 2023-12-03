@@ -24,4 +24,9 @@ public class ConferenceRoom implements Serializable{
         this.roomArea = roomArea;
         this.roomState = roomState;
     }
+
+    public void print()
+    {
+
+    }
 }

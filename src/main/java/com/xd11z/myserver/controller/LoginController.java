@@ -29,11 +29,10 @@ public class LoginController {
     public ServerResponse loginIn(@RequestBody UserLogin userLogin, HttpServletResponse response) {
         //记录到日志文件中，可以不写
         logger.write("./src/main/java/com/xd11z/myserver/util/log.txt", JSON.toJSONString(userLogin));
+        StringBuilder msg = new StringBuilder("");
         //判断userLogin是否正确
-        String msg = null;
         User user = userService.CheckUserLogin(userLogin,msg);
-        //此处逻辑应该重写 应该使用msg判断，并且字符串判断用equals
-        if(user.userID=="0" || user.userID=="1")
+        if(user!=null)
         {
             //在header附加上token，以后前端可以拿着这个来访问后端了（其实这里放在数据包里也可以）
             response.setHeader("Authorization", TokenTool.getToken(user));
@@ -41,11 +40,6 @@ public class LoginController {
             UserInfo userInfo = user.getInfo();
             return ServerResponse.success(userInfo);
         }
-        else
-        {
-            if(user.userID=="2") return ServerResponse.fail("用户名不存在");
-            else if(user.userID=="3") return ServerResponse.fail("用户名与密码不匹配");
-            else return ServerResponse.fail("Unkown Error!");
-        }
+        else return ServerResponse.fail(msg.toString());
     }
 }

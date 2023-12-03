@@ -29,7 +29,7 @@ public class LoginJDBC {
         ResultSet rsAdmins = null;
         try {
             //开一个连接
-            conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;encrypt=false;databaseName=reserve;user=typemoon;password=Kama&L1lith");
+            conn = DriverManager.getConnection(JDBCconnection.connectionurl);
             //检查预约用户
             stmtReservationUsers = conn.prepareStatement(QUERY_RESERVATION_USERS);
             stmtReservationUsers.setString(1, username);

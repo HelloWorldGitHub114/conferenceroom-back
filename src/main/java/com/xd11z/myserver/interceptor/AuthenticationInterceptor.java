@@ -35,7 +35,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String token = request.getHeader("Authorization");// 从 http 请求头中取出 token
-        logger.write(token);//写个日志，可删掉
+        //logger.write(token);//写个日志，可删掉
         // 如果不是映射到方法直接通过
         if(!(handler instanceof HandlerMethod)){
             return true;

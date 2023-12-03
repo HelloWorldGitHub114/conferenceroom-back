@@ -20,37 +20,33 @@ public class ConferenceRoomContreller
     @GetMapping("/listall")//展示所有会议室
     //返回值为ConferenceRoom的列表
     public ServerResponse getAllConferenceRooms() {
-        List<ConferenceRoom> conferenceRooms = ConferenceRoomJDBC.SearchAll();
+        List<ConferenceRoom> conferenceRooms = ConferenceRoomJDBC.SearchAll(0);
         return ServerResponse.success(conferenceRooms);
     }
 
-    @GetMapping("listallonstate")
+    @GetMapping("listallonstate")//展示所有可用（used=1）的会议室
     public  ServerResponse Getallonstate()
     {
-        List<ConferenceRoom> conferenceRooms = ConferenceRoomJDBC.SearchAll();
+        List<ConferenceRoom> conferenceRooms = ConferenceRoomJDBC.SearchAll(1);
         return ServerResponse.success(conferenceRooms);
     }
 
-    @GetMapping("getconditionsonstate")
+    @GetMapping("getconditionsonstate")//展示申请会议室页面的下拉搜索框（只返回可用状态为1的）
     public ServerResponse GetConditionsOnstate()
     {
-        List<ConferenceRoom> conferenceRooms = ConferenceRoomJDBC.SearchAll();
-        return ServerResponse.success(conferenceRooms);
+        List<Map<String,Integer>> floors = ConferenceRoomJDBC.GetDistinctFloor(1);
+        List<Map<String,String>> types = ConferenceRoomJDBC.GetDistinctType(1);
+        List<Map<String,Integer>> sizes = ConferenceRoomJDBC.GetDistinctSize(1);
+        return ServerResponse.success(new Conditions(floors,types,sizes));
     }
 
     @GetMapping("/getconditions")//展示会议室管理页面的下拉搜索框
     //返回值为三个列表 分别为所有可能的序号、类型、容纳人数数据
     public ServerResponse getconditions()
     {
-        List<Map<String,Integer>> floors = new ArrayList<>();
-        Map<String,Integer> mp= new HashMap<>();
-        mp.put("roomFloor",1);
-        floors.add(mp);
-        mp= new HashMap<>();
-        mp.put("roomFloor",2);
-        floors.add(mp);
-        List<Map<String,String>> types = new ArrayList<>();
-        List<Map<String,Integer>> sizes = new ArrayList<>();
+        List<Map<String,Integer>> floors = ConferenceRoomJDBC.GetDistinctFloor(0);
+        List<Map<String,String>> types = ConferenceRoomJDBC.GetDistinctType(0);
+        List<Map<String,Integer>> sizes = ConferenceRoomJDBC.GetDistinctSize(0);
         return ServerResponse.success(new Conditions(floors,types,sizes));
     }
 
@@ -60,5 +56,26 @@ public class ConferenceRoomContreller
         boolean flg=ConferenceRoomJDBC.ChangeState(conferenceRoom);
         if(flg) return ServerResponse.success("修改成功");
         else return ServerResponse.fail("修改失败");
+    }
+
+    @PostMapping("/add")//添加会议室
+    //未实现
+    public ServerResponse AddOrUpdate(@RequestBody ConferenceRoom conferenceRoom)
+    {
+        ConferenceRoomJDBC.ChangeState(conferenceRoom);//设置为可用
+        logger.write(JSON.toJSONString(conferenceRoom));
+        return ServerResponse.success("");
+    }
+
+    @GetMapping("/listby/{roomFloor}/{roomType}/{roomSize}")
+    public ServerResponse listAll(@PathVariable(value = "roomFloor")  String roomFloor,
+                                  @PathVariable(value = "roomType")  String roomType,
+                          @PathVariable(value = "roomSize")  String roomSize)
+    {
+        roomFloor  = String.valueOf(JSON.parse(roomFloor));
+        roomType = (String)JSON.parse(roomType);
+        roomSize = String.valueOf(JSON.parse(roomSize));
+        List<ConferenceRoom> res = ConferenceRoomJDBC.SearchOnConditon(roomFloor,roomType,roomSize);
+        return ServerResponse.success(res);
     }
 }
