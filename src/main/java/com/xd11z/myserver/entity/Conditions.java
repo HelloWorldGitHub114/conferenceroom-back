@@ -11,13 +11,11 @@ import java.util.Map;
 public class Conditions implements Serializable
 {
     public List<Map<String,Integer>> floors;
-    public List<Map<String,String>> types;
     public List<Map<String,Integer>> sizes;
 
-    public Conditions(List<Map<String,Integer>> f, List<Map<String,String>> t, List<Map<String,Integer>> s)
+    public Conditions(List<Map<String,Integer>> f, List<Map<String,Integer>> s)
     {
         this.floors=f;
-        this.types=t;
         this.sizes=s;
     }
 }

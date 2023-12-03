@@ -27,14 +27,14 @@ public class ConferenceRoomJDBC
             rsRooms= stmtRoom.executeQuery();
             while(rsRooms.next())
             {
-                String roomNo = rsRooms.getString("RoomID");
+                int roomID = rsRooms.getInt("RoomID");
+                String roomNo = rsRooms.getString("RoomNo");
                 String roomName = rsRooms.getString("RoomName");
                 String roomFloor = rsRooms.getString("RoomFloor");
-                String roomType = rsRooms.getString("RoomType");
                 int roomSize = rsRooms.getInt("Size");
-                int roomArea = rsRooms.getInt("Area");
+                float roomArea = rsRooms.getFloat("Area");
                 int roomState = rsRooms.getInt("used");
-                ConferenceRoom R = new ConferenceRoom(roomNo,roomName,roomFloor,roomType,roomSize,roomArea,roomState);
+                ConferenceRoom R = new ConferenceRoom(roomID,roomNo,roomName,roomFloor,roomSize,roomArea,roomState);
                 res.add(R);
             }
         }
@@ -59,57 +59,57 @@ public class ConferenceRoomJDBC
     }
 
     /**
-     * 查询数据库中所有的会议室信息
+     * 按条件查询数据库中所有的会议室信息
      * @param roomFloor 楼层
-     * @param roomType 类型
      * @param roomSize 容量（人数）
+     * @param SearchState 搜索状态：搜索全搜索/可用的/不可用的 会议室
      * @return List<ConferenceRoom> 符合条件的会议室信息
      */
-    public static List<ConferenceRoom> SearchOnConditon(String roomFloor,String roomType,String roomSize)
+    public static List<ConferenceRoom> SearchOnConditon(String roomFloor,String roomSize,int SearchState)
     {
         List<ConferenceRoom> res = new ArrayList<ConferenceRoom>();
         String QUERY_ROOM = "SELECT * FROM ConferenceRoom";
         boolean hasCondition = false;
         try (Connection connection = DriverManager.getConnection(JDBCconnection.connectionurl))
         {
-            if (!roomFloor.isEmpty() || !roomType.isEmpty() || !roomSize.isEmpty())  QUERY_ROOM += " WHERE";
+            if (!roomFloor.isEmpty()  || !roomSize.isEmpty() || SearchState==1)  QUERY_ROOM += " WHERE";
             if (!roomFloor.isEmpty())
             {
                 QUERY_ROOM += " roomFloor = ?";
                 hasCondition = true;
             }
-            if (!roomType.isEmpty())
-            {
-                if (hasCondition)  QUERY_ROOM += " AND roomType = ?";
-                else
-                {
-                    QUERY_ROOM += " roomType = ?";
-                    hasCondition = true;
-                }
-            }
             if (!roomSize.isEmpty())
             {
                 if (hasCondition) QUERY_ROOM += " AND Size = ?";
-                else QUERY_ROOM += " Size = ?";
+                else{
+                    QUERY_ROOM += " Size = ?";
+                    hasCondition = true;
+                }
+            }
+            if(SearchState==1)
+            {
+                if (hasCondition) QUERY_ROOM += " AND used = 1";
+                else {
+                    QUERY_ROOM += " used = 1";
+                }
             }
             try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_ROOM))
             {
                 int parameterIndex = 1;
                 if (!roomFloor.isEmpty()) preparedStatement.setString(parameterIndex++, roomFloor);
-                if (!roomType.isEmpty()) preparedStatement.setString(parameterIndex++, roomType);
                 if (!roomSize.isEmpty()) preparedStatement.setString(parameterIndex, roomSize);
                 try (ResultSet rsRooms = preparedStatement.executeQuery())
                 {
                     while (rsRooms.next())
                     {
-                        String roomNo = rsRooms.getString("RoomID");
+                        int roomID = rsRooms.getInt("RoomID");
+                        String roomNo = rsRooms.getString("RoomNo");
                         String roomName = rsRooms.getString("RoomName");
-                        String rsroomFloor = rsRooms.getString("RoomFloor");
-                        String rsroomType = rsRooms.getString("RoomType");
-                        int rsroomSize = rsRooms.getInt("Size");
-                        int roomArea = rsRooms.getInt("Area");
+                        String RsroomFloor = rsRooms.getString("RoomFloor");
+                        int RsroomSize = rsRooms.getInt("Size");
+                        float roomArea = rsRooms.getFloat("Area");
                         int roomState = rsRooms.getInt("used");
-                        ConferenceRoom R = new ConferenceRoom(roomNo,roomName,rsroomFloor,rsroomType,rsroomSize,roomArea,roomState);
+                        ConferenceRoom R = new ConferenceRoom(roomID,roomNo,roomName,RsroomFloor,RsroomSize,roomArea,roomState);
                         res.add(R);
                     }
                 }
@@ -128,14 +128,14 @@ public class ConferenceRoomJDBC
      */
     public static boolean ChangeState(ConferenceRoom c)
     {
-        String RoomID=c.roomNo;
+        int RoomID=c.roomID;
         String UPDATEState = "Update ConferenceRoom set used=(1-used) Where RoomID= ? ";
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
             conn = DriverManager.getConnection(JDBCconnection.connectionurl);
             stmt = conn.prepareStatement(UPDATEState);
-            stmt.setString(1, RoomID);
+            stmt.setInt(1, RoomID);
             stmt.executeUpdate();
             return true;
         }
@@ -157,6 +157,7 @@ public class ConferenceRoomJDBC
             }
         }
     }
+
     /** 获取会议室的所有可能楼层，用于下拉检索框
      * @param SearchState 搜索状态：搜索全搜索/可用的/不可用的
      * @return List<Map<String,Integer>>，排好序的楼层
@@ -171,7 +172,6 @@ public class ConferenceRoomJDBC
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            //开一个连接
             conn = DriverManager.getConnection(JDBCconnection.connectionurl);
             stmt = conn.prepareStatement(QUERY_ROOM);
             rs= stmt.executeQuery();
@@ -188,52 +188,6 @@ public class ConferenceRoomJDBC
         }
         finally
         {
-            //关闭数据库连接
-            try
-            {
-                if (rs != null) rs.close();
-                if (stmt != null) stmt.close();
-                if (conn != null) conn.close();
-            }
-            catch (SQLException se)
-            {
-                se.printStackTrace();
-            }
-        }
-        return res;
-    }
-
-    /** 获取会议室的所有可能类型，用于下拉检索框
-     * @param SearchState 搜索状态：搜索全搜索/可用的/不可用的
-     */
-    public static List<Map<String,String>> GetDistinctType(int SearchState)
-    {
-        List<Map<String,String>> res = new ArrayList<>();
-        String QUERY_ROOM;
-        if(SearchState==0) QUERY_ROOM = "SELECT DISTINCT RoomType FROM ConferenceRoom";
-        else QUERY_ROOM = "SELECT DISTINCT RoomType FROM ConferenceRoom where used=1";
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        try {
-            //开一个连接
-            conn = DriverManager.getConnection(JDBCconnection.connectionurl);
-            stmt = conn.prepareStatement(QUERY_ROOM);
-            rs= stmt.executeQuery();
-            while(rs.next())
-            {
-                Map<String,String> mp= new HashMap<>();
-                mp.put("roomType",rs.getString("RoomType"));
-                res.add(mp);
-            }
-        }
-        catch (SQLException se)
-        {
-            se.printStackTrace();
-        }
-        finally
-        {
-            //关闭数据库连接
             try
             {
                 if (rs != null) rs.close();
@@ -261,7 +215,6 @@ public class ConferenceRoomJDBC
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            //开一个连接
             conn = DriverManager.getConnection(JDBCconnection.connectionurl);
             stmt = conn.prepareStatement(QUERY_ROOM);
             rs= stmt.executeQuery();
@@ -291,5 +244,121 @@ public class ConferenceRoomJDBC
             }
         }
         return res;
+    }
+
+    public static boolean CheckRepeatID(int id)
+    {
+        String QUERY = "SELECT Count(*) as cnt FROM ConferenceRoom Where RoomID = ?";
+        int res=0;
+        try (Connection connection = DriverManager.getConnection(JDBCconnection.connectionurl))
+        {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY))
+            {
+                preparedStatement.setInt(1, id);
+                try (ResultSet rs = preparedStatement.executeQuery())
+                {
+                    if (rs.next()) res=rs.getInt("cnt");
+                }
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return (res==1);
+    }
+
+    public static boolean CheckRepeatNo(String no)
+    {
+        String QUERY = "SELECT Count(*) as cnt FROM ConferenceRoom Where RoomNo = ?";
+        int res=0;
+        try (Connection connection = DriverManager.getConnection(JDBCconnection.connectionurl))
+        {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY))
+            {
+                preparedStatement.setString(1, no);
+                try (ResultSet rs = preparedStatement.executeQuery())
+                {
+                    if (rs.next()) res=rs.getInt("cnt");
+                }
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return (res==1);
+    }
+
+    public static int Count()
+    {
+        String QUERY = "SELECT Count(*) as cnt FROM ConferenceRoom";
+        int cnt=0;
+        try (Connection connection = DriverManager.getConnection(JDBCconnection.connectionurl))
+        {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY))
+            {
+                try (ResultSet rs = preparedStatement.executeQuery())
+                {
+                    if (rs.next()) cnt=rs.getInt("cnt");
+                }
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return cnt;
+    }
+
+    public static boolean UpdateInfo(ConferenceRoom conferenceRoom)
+    {
+        String UPDATEState = """    
+                    UPDATE ConferenceRoom
+                    SET RoomNo = ?, RoomName = ?, RoomFloor = ?, Size = ?, Area = ? ,used = ?
+                    WHERE RoomID = ?;
+                    """;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        try {
+            conn = DriverManager.getConnection(JDBCconnection.connectionurl);
+            stmt = conn.prepareStatement(UPDATEState);
+            stmt.setString(1,conferenceRoom.roomNo);
+            stmt.setString(2,conferenceRoom.roomName);
+            stmt.setString(3,conferenceRoom.roomFloor);
+            stmt.setInt(4,conferenceRoom.roomSize);
+            stmt.setFloat(5,conferenceRoom.roomArea);
+            stmt.setInt(6,conferenceRoom.roomState);
+            stmt.setInt(7,conferenceRoom.roomID);
+            stmt.executeUpdate();
+            return true;
+        }
+        catch (SQLException se)
+        {
+            se.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean InsertInfo(ConferenceRoom conferenceRoom)
+    {
+        int affectedRow=0;
+        String UPDATEState ="INSERT INTO ConferenceRoom VALUES (?,?,?,?,?,?,null,null,?)";
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        try {
+            conn = DriverManager.getConnection(JDBCconnection.connectionurl);
+            stmt = conn.prepareStatement(UPDATEState);
+            stmt.setInt(1,Count()+1);
+            stmt.setString(2,conferenceRoom.roomNo);
+            stmt.setString(3,conferenceRoom.roomName);
+            stmt.setString(4,conferenceRoom.roomFloor);
+            stmt.setInt(5,conferenceRoom.roomSize);
+            stmt.setFloat(6,conferenceRoom.roomArea);
+            stmt.setInt(7,conferenceRoom.roomState);
+            affectedRow=stmt.executeUpdate();
+        }
+        catch (SQLException se)
+        {
+            se.printStackTrace();
+        }
+        return (!(affectedRow==0));
     }
 }

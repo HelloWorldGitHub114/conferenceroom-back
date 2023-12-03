@@ -7,26 +7,27 @@ import java.io.Serializable;
  * 房号、名字、楼层、房间类型（大、小会议室）、人数、面积、状态（是否可用）
  */
 public class ConferenceRoom implements Serializable{
+    public int roomID;
     public String roomNo;
     public String roomName;
     public String roomFloor;
-    public String roomType;
     public int roomSize;
-    public int roomArea;
+    public float roomArea;
     public int roomState;
 
-    public ConferenceRoom(String roomNo, String roomName, String roomFloor, String roomType, int roomSize, int roomArea, int roomState) {
+    public ConferenceRoom(int roomID, String roomNo, String roomName, String roomFloor, int roomSize, float roomArea, int roomState)
+    {
+        this.roomID = roomID;
         this.roomNo = roomNo;
         this.roomName = roomName;
         this.roomFloor = roomFloor;
-        this.roomType = roomType;
         this.roomSize = roomSize;
         this.roomArea = roomArea;
         this.roomState = roomState;
     }
 
-    public void print()
+    public void setUseable()
     {
-
+        this.roomState=1;
     }
 }
