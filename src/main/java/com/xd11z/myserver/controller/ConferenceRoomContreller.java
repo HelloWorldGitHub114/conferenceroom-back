@@ -81,26 +81,17 @@ public class ConferenceRoomContreller
         else return ServerResponse.success("");
     }
 
-    @GetMapping("/listby/{roomFloor}/{roomSize}")//按照条件筛选会议室
-    //Waitting For Modify
-    public ServerResponse listAll(@PathVariable(value = "roomFloor")  String roomFloor,
-                          @PathVariable(value = "roomSize")  String roomSize)
+    @GetMapping("/listby")//按照条件筛选会议室
+    public ServerResponse listAll(ConferenceRoom c)
     {
-        roomFloor  = String.valueOf(JSON.parse(roomFloor));
-        roomSize = String.valueOf(JSON.parse(roomSize));
-        //List<ConferenceRoom> res = ConferenceRoomJDBC.SearchOnConditon(roomFloor,roomSize,0);
-        //return ServerResponse.success(res);
-        return ServerResponse.fail("未实现");
+        List<ConferenceRoom> res = ConferenceRoomJDBC.SearchOnConditon(Integer.toString(c.roomFloor),Integer.toString(c.roomSize),0);
+        return ServerResponse.success(res);
     }
 
-    @GetMapping("/listbyonstate/{roomFloor}/{roomSize}")//按照条件筛选会议室（状态为可用）
-    //Waitting For Modify
-    public ServerResponse listAllOnState(@PathVariable(value = "roomFloor")  String roomFloor,
-                                  @PathVariable(value = "roomSize")  String roomSize)
+    @GetMapping("/listbyonstate")//按照条件筛选会议室（状态为可用）
+    public ServerResponse listAllOnState(ConferenceRoom c)
     {
-        roomFloor  = String.valueOf(JSON.parse(roomFloor));
-        roomSize = String.valueOf(JSON.parse(roomSize));
-        List<ConferenceRoom> res = ConferenceRoomJDBC.SearchOnConditon(roomFloor,roomSize,1);
+        List<ConferenceRoom> res = ConferenceRoomJDBC.SearchOnConditon(Integer.toString(c.roomFloor),Integer.toString(c.roomSize),1);
         return ServerResponse.success(res);
     }
 
