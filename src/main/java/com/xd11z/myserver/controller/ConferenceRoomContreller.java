@@ -1,13 +1,11 @@
 package com.xd11z.myserver.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.xd11z.myserver.annotation.UserLoginToken;
 import com.xd11z.myserver.entity.*;
 import com.xd11z.myserver.util.*;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 //Get请求均可通过"http://localhost:8080/XXX"直接查看后端的回复情况（需要参数）
@@ -17,6 +15,7 @@ import java.util.*;
 @RequestMapping("/conference-room")
 public class ConferenceRoomContreller 
 {
+    @UserLoginToken
     @GetMapping("/listall")//展示所有会议室
     //返回值为ConferenceRoom的列表
     public ServerResponse getAllConferenceRooms()
@@ -25,6 +24,7 @@ public class ConferenceRoomContreller
         return ServerResponse.success(conferenceRooms);
     }
 
+    @UserLoginToken
     @GetMapping("listallonstate")//展示所有可用（used=1）的会议室
     public  ServerResponse Getallonstate()
     {
@@ -32,6 +32,7 @@ public class ConferenceRoomContreller
         return ServerResponse.success(conferenceRooms);
     }
 
+    @UserLoginToken
     @GetMapping("getconditionsonstate")//展示申请会议室页面的下拉搜索框（只返回可用状态为1的）
     public ServerResponse GetConditionsOnstate()
     {
@@ -40,6 +41,7 @@ public class ConferenceRoomContreller
         return ServerResponse.success(new Conditions(floors,sizes));
     }
 
+    @UserLoginToken
     @GetMapping("/getconditions")//展示会议室管理页面的下拉搜索框
     //返回值为两个列表 分别为所有可能的序号、容纳人数数据
     public ServerResponse getconditions()
@@ -49,6 +51,7 @@ public class ConferenceRoomContreller
         return ServerResponse.success(new Conditions(floors,sizes));
     }
 
+    @UserLoginToken
     @PutMapping(value = "/changestate")//管理员修改会议室的可用状态
     public ServerResponse changeState(@RequestBody ConferenceRoom conferenceRoom)
     {
@@ -57,6 +60,7 @@ public class ConferenceRoomContreller
         else return ServerResponse.fail("修改失败");
     }
 
+    @UserLoginToken
     @PostMapping("/add")//添加和更新会议室信息
     public ServerResponse Add(@RequestBody ConferenceRoom conferenceRoom)
     {
@@ -81,22 +85,20 @@ public class ConferenceRoomContreller
         else return ServerResponse.success("");
     }
 
+    @UserLoginToken
     @GetMapping("/listby")//按照条件筛选会议室
-    public ServerResponse listAll(ConferenceRoom c)
+    public ServerResponse listAll(@RequestParam(required = false) String roomFloor,
+                                  @RequestParam(required = false) String roomSize,
+                                  @RequestParam(required = false) String roomState)
     {
-        List<ConferenceRoom> res = ConferenceRoomJDBC.SearchOnConditon(Integer.toString(c.roomFloor),Integer.toString(c.roomSize),0);
+        logger.write(roomFloor+roomSize+roomState);
+        List<ConferenceRoom> res = ConferenceRoomJDBC.SearchOnConditon(roomFloor,roomSize, Integer.parseInt(roomState));
         return ServerResponse.success(res);
     }
 
-    @GetMapping("/listbyonstate")//按照条件筛选会议室（状态为可用）
-    public ServerResponse listAllOnState(ConferenceRoom c)
-    {
-        List<ConferenceRoom> res = ConferenceRoomJDBC.SearchOnConditon(Integer.toString(c.roomFloor),Integer.toString(c.roomSize),1);
-        return ServerResponse.success(res);
-    }
-
-    @DeleteMapping("/delete/{roomID}")//删除会议室
-    public ServerResponse DeleteRoom(@PathVariable(value = "roomID") int ID)
+    @DeleteMapping("/delete/")//删除会议室
+    //遇到了BUG
+    public ServerResponse delete(@RequestParam("roomID") int ID)
     {
         boolean flg =ConferenceRoomJDBC.DeleteRoom(ID);
         if(!flg) return ServerResponse.fail("删除错误");
