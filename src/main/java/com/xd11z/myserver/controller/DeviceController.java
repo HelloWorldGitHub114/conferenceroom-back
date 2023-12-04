@@ -27,23 +27,33 @@ public class DeviceController {
                 return ServerResponse.fail("设备名称或所属会议室ID为空！");
             }
 
-            // 查询设备ID
-            Integer deviceId = DeviceJDBC.getDeviceIdByName(deviceName);
-
-            // 如果存在设备ID，则执行更新操作；否则执行插入操作
-            if (deviceId != null&& device.getId()==null) {
-                return ServerResponse.fail("该会议室已存在此设备,请直接修改设备数量即可！");
-
-            } else {
-                // 插入新设备
-                int rowsAffected = DeviceJDBC.insertDevice(device);
+            // 如果设备ID不为空，说明是修改操作
+            if (device.getId() != null) {
+                // 执行修改操作
+                int rowsAffected = DeviceJDBC.updateDevice(device);
 
                 if (rowsAffected > 0) {
-                    return ServerResponse.success("设备插入成功！");
-                } else if (rowsAffected == -1) {
-                    return ServerResponse.fail("该会议室已存在此设备，请直接修改设备数量即可");
+                    return ServerResponse.success("设备修改成功！");
                 } else {
-                    return ServerResponse.fail("设备插入失败！");
+                    return ServerResponse.fail("设备修改失败！");
+                }
+            } else {
+                // 如果设备ID为空，说明是新增操作
+                // 查询设备ID
+                Integer deviceId = DeviceJDBC.getDeviceIdByName(deviceName);
+
+                // 如果存在设备ID，则说明该会议室已存在此设备，不进行插入操作
+                if (deviceId != null) {
+                    return ServerResponse.fail("该会议室已存在此设备，请直接修改设备数量即可！");
+                } else {
+                    // 插入新设备
+                    int rowsAffected = DeviceJDBC.insertDevice(device);
+
+                    if (rowsAffected > 0) {
+                        return ServerResponse.success("设备插入成功！");
+                    } else {
+                        return ServerResponse.fail("设备插入失败！");
+                    }
                 }
             }
         } catch (Exception e) {
@@ -51,6 +61,7 @@ public class DeviceController {
             return ServerResponse.fail("发生错误：" + e.getMessage());
         }
     }
+
 
     @DeleteMapping("/delete/{did}")
     public ServerResponse delete(@PathVariable("did") Integer did) {
@@ -67,7 +78,12 @@ public class DeviceController {
     @GetMapping("/listby/{roomId}")
     public ServerResponse listByRoomId(@PathVariable("roomId") Integer roomId){
         List<Device> devices = DeviceJDBC.listByRoomid(roomId);
-        //System.out.println(devices);
+        return ServerResponse.success(devices);
+    }
+
+    @GetMapping("/listbyapply/{roomId}")
+    public ServerResponse listByRoomIdForUsers(@PathVariable("roomId") Integer roomId){
+        List<Device> devices = DeviceJDBC.listByRoomidForUsers(roomId);
         return ServerResponse.success(devices);
     }
 

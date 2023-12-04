@@ -14,8 +14,8 @@ public class DeviceJDBC {
         try {
             connection = DriverManager.getConnection(JDBCconnection.connectionurl);
 
-            // 编写 SQL 查询语句
-            String query = "SELECT * FROM Device WHERE RoomID = ?";
+            // 编写 SQL 查询语句，按照设备数量降序排列
+            String query = "SELECT * FROM Device WHERE RoomID = ? ORDER BY DeviceNum DESC";
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, roomId);
 
@@ -50,6 +50,53 @@ public class DeviceJDBC {
 
         return devices;
     }
+
+    public static List<Device> listByRoomidForUsers(Integer roomId) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        List<Device> devices = new ArrayList<>();
+
+        try {
+            connection = DriverManager.getConnection(JDBCconnection.connectionurl);
+
+            // 编写 SQL 查询语句，只查询设备数量不为0的记录，并按照设备数量降序排列
+            String query = "SELECT * FROM Device WHERE RoomID = ? AND DeviceNum > 0 ORDER BY DeviceNum DESC";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, roomId);
+
+            // 执行查询
+            resultSet = preparedStatement.executeQuery();
+
+            // 处理查询结果
+            while (resultSet.next()) {
+                Device device = new Device();
+                device.setId(resultSet.getInt("DeviceID"));
+                device.setDname(resultSet.getString("DeviceName"));
+                device.setDnumber(resultSet.getInt("DeviceNum"));
+                device.setRoomId(resultSet.getInt("RoomID"));
+
+                // 将设备对象添加到列表
+                devices.add(device);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // 在出现异常时返回空列表或者抛出自定义异常，具体情况根据需求而定
+            return devices;
+        } finally {
+            // 关闭数据库连接
+            try {
+                if (resultSet != null) resultSet.close();
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return devices;
+    }
+
 
     public static int updateDeviceNumber(int deviceId, int newNumber) {
         Connection connection = null;
@@ -91,19 +138,19 @@ public class DeviceJDBC {
         try {
             connection = DriverManager.getConnection(JDBCconnection.connectionurl);
 
-            // 查询当前表中记录数量
-            String countQuery = "SELECT COUNT(*) FROM Device";
-            preparedStatement = connection.prepareStatement(countQuery);
+            // 查询当前表中记录的最大设备ID
+            String maxIdQuery = "SELECT MAX(DeviceID) FROM Device";
+            preparedStatement = connection.prepareStatement(maxIdQuery);
             resultSet = preparedStatement.executeQuery();
 
-            // 获取记录数量
-            int recordCount = 0;
+            // 获取当前表中记录的最大设备ID
+            int maxId = 0;
             if (resultSet.next()) {
-                recordCount = resultSet.getInt(1);
+                maxId = resultSet.getInt(1);
             }
 
-            // 新的 DeviceID 为记录数量 + 1
-            device.setId(recordCount + 1);
+            // 新的 DeviceID 为最大设备ID + 1
+            device.setId(maxId + 1);
 
             // 插入新的设备记录
             String insertQuery = "INSERT INTO Device (DeviceID, DeviceName, RoomID, DeviceNum) VALUES (?, ?, ?, ?)";
@@ -130,6 +177,7 @@ public class DeviceJDBC {
             }
         }
     }
+
 
 
 
