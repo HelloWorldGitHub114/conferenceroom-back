@@ -4,3 +4,4 @@
 2023-12-03 20:58:37   {"roomArea":30,"roomFloor":"1","roomName":"会议室一号","roomNo":"1001","roomSize":100,"roomState":1,"roomType":"大型会议室"}
 2023-12-03 21:31:30   {"roomArea":15,"roomFloor":"2","roomName":"会议室二号","roomNo":"1002","roomSize":50,"roomState":1,"roomType":"小型会议室"}
 2023-12-03 21:31:35   {"roomArea":15,"roomFloor":"2","roomName":"会议室二号","roomNo":"1004","roomSize":50,"roomState":1,"roomType":"小型会议室"}
+2023-12-04 10:26:00   {"password":"adminn","username":"adminn"}

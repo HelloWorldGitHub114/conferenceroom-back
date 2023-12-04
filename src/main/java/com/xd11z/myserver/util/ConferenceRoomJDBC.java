@@ -30,7 +30,7 @@ public class ConferenceRoomJDBC
                 int roomID = rsRooms.getInt("RoomID");
                 String roomNo = rsRooms.getString("RoomNo");
                 String roomName = rsRooms.getString("RoomName");
-                String roomFloor = rsRooms.getString("RoomFloor");
+                int roomFloor = rsRooms.getInt("RoomFloor");
                 int roomSize = rsRooms.getInt("Size");
                 float roomArea = rsRooms.getFloat("Area");
                 int roomState = rsRooms.getInt("used");
@@ -105,7 +105,7 @@ public class ConferenceRoomJDBC
                         int roomID = rsRooms.getInt("RoomID");
                         String roomNo = rsRooms.getString("RoomNo");
                         String roomName = rsRooms.getString("RoomName");
-                        String RsroomFloor = rsRooms.getString("RoomFloor");
+                        int RsroomFloor = rsRooms.getInt("RoomFloor");
                         int RsroomSize = rsRooms.getInt("Size");
                         float roomArea = rsRooms.getFloat("Area");
                         int roomState = rsRooms.getInt("used");
@@ -322,7 +322,7 @@ public class ConferenceRoomJDBC
             stmt = conn.prepareStatement(UPDATEState);
             stmt.setString(1,conferenceRoom.roomNo);
             stmt.setString(2,conferenceRoom.roomName);
-            stmt.setString(3,conferenceRoom.roomFloor);
+            stmt.setInt(3,conferenceRoom.roomFloor);
             stmt.setInt(4,conferenceRoom.roomSize);
             stmt.setFloat(5,conferenceRoom.roomArea);
             stmt.setInt(6,conferenceRoom.roomState);
@@ -349,7 +349,7 @@ public class ConferenceRoomJDBC
             stmt.setInt(1,Count()+1);
             stmt.setString(2,conferenceRoom.roomNo);
             stmt.setString(3,conferenceRoom.roomName);
-            stmt.setString(4,conferenceRoom.roomFloor);
+            stmt.setInt(4,conferenceRoom.roomFloor);
             stmt.setInt(5,conferenceRoom.roomSize);
             stmt.setFloat(6,conferenceRoom.roomArea);
             stmt.setInt(7,conferenceRoom.roomState);
@@ -360,5 +360,56 @@ public class ConferenceRoomJDBC
             se.printStackTrace();
         }
         return (!(affectedRow==0));
+    }
+
+    public static ConferenceRoom SearchByID(int id)
+    {
+        ConferenceRoom res = null;
+        String QUERY_ROOM = "SELECT * FROM ConferenceRoom where RoomID = ?";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            conn = DriverManager.getConnection(JDBCconnection.connectionurl);
+            stmt = conn.prepareStatement(QUERY_ROOM);
+            stmt.setInt(1,id);
+            rs= stmt.executeQuery();
+            if (rs.next())
+            {
+                int roomID = rs.getInt("RoomID");
+                String roomNo = rs.getString("RoomNo");
+                String roomName = rs.getString("RoomName");
+                int roomFloor = rs.getInt("RoomFloor");
+                int roomSize = rs.getInt("Size");
+                float roomArea = rs.getFloat("Area");
+                int roomState = rs.getInt("used");
+                res = new ConferenceRoom(roomID,roomNo,roomName,roomFloor,roomSize,roomArea,roomState);
+            }
+        }
+        catch (SQLException se)
+        {
+            se.printStackTrace();
+        }
+        return res;
+    }
+
+    public static boolean DeleteRoom(int id)
+    {
+        int affectedRow = 0;
+        String QUERY_ROOM = "Delete FROM ConferenceRoom where RoomID = ?";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            conn = DriverManager.getConnection(JDBCconnection.connectionurl);
+            stmt = conn.prepareStatement(QUERY_ROOM);
+            stmt.setInt(1,id);
+            affectedRow = stmt.executeUpdate();
+        }
+        catch (SQLException se)
+        {
+            se.printStackTrace();
+        }
+        return (affectedRow==1);
     }
 }

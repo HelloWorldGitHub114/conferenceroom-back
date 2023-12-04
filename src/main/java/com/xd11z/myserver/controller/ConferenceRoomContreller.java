@@ -41,7 +41,7 @@ public class ConferenceRoomContreller
     }
 
     @GetMapping("/getconditions")//展示会议室管理页面的下拉搜索框
-    //返回值为三个列表 分别为所有可能的序号、类型、容纳人数数据
+    //返回值为两个列表 分别为所有可能的序号、容纳人数数据
     public ServerResponse getconditions()
     {
         List<Map<String,Integer>> floors = ConferenceRoomJDBC.GetDistinctFloor(0);
@@ -58,37 +58,43 @@ public class ConferenceRoomContreller
     }
 
     @PostMapping("/add")//添加和更新会议室信息
-    //未实现
     public ServerResponse Add(@RequestBody ConferenceRoom conferenceRoom)
     {
         int ID=conferenceRoom.roomID;
-        String No=conferenceRoom.roomNo;
+        String No=conferenceRoom.roomNo;//修改之后的No
+        boolean flg=false;
         boolean repeatID=ConferenceRoomJDBC.CheckRepeatID(ID);//检查数据库中是否存在该ID
-        boolean repeatNo=ConferenceRoomJDBC.CheckRepeatNo(No);//检查数据库中是否存在该房号
-        if(repeatNo==true) return ServerResponse.fail("房号重复，请修改房号。");
-        if(repeatID==true)//说明为修改
+        if(repeatID==true)//说明为修改 房号可以等于自己之前的房号
         {
-            boolean flg=ConferenceRoomJDBC.UpdateInfo(conferenceRoom);
+            boolean repeatNo=ConferenceRoomJDBC.CheckRepeatNo(No);//房号是否重复
+            boolean repeatMyself=(conferenceRoom.roomNo.equals(ConferenceRoomJDBC.SearchByID(ID).roomNo));//房号是否与自己修改前重复
+            if((repeatNo) && (!repeatMyself)) return ServerResponse.fail("房号重复，请修改房号。");
+            else flg=ConferenceRoomJDBC.UpdateInfo(conferenceRoom);
         }
-        else//说明为新增
+        else//说明为新增 房号不能重复
         {
+            if(ConferenceRoomJDBC.CheckRepeatNo(No)==true) return ServerResponse.fail("房号重复，请修改房号。");
             conferenceRoom.setUseable();
-            boolean flg=ConferenceRoomJDBC.InsertInfo(conferenceRoom);
+            flg=ConferenceRoomJDBC.InsertInfo(conferenceRoom);
         }
-        return ServerResponse.fail("未实现");
+        if(!flg) return ServerResponse.fail("修改错误");
+        else return ServerResponse.success("");
     }
 
     @GetMapping("/listby/{roomFloor}/{roomSize}")//按照条件筛选会议室
+    //Waitting For Modify
     public ServerResponse listAll(@PathVariable(value = "roomFloor")  String roomFloor,
                           @PathVariable(value = "roomSize")  String roomSize)
     {
         roomFloor  = String.valueOf(JSON.parse(roomFloor));
         roomSize = String.valueOf(JSON.parse(roomSize));
-        List<ConferenceRoom> res = ConferenceRoomJDBC.SearchOnConditon(roomFloor,roomSize,0);
-        return ServerResponse.success(res);
+        //List<ConferenceRoom> res = ConferenceRoomJDBC.SearchOnConditon(roomFloor,roomSize,0);
+        //return ServerResponse.success(res);
+        return ServerResponse.fail("未实现");
     }
 
     @GetMapping("/listbyonstate/{roomFloor}/{roomSize}")//按照条件筛选会议室（状态为可用）
+    //Waitting For Modify
     public ServerResponse listAllOnState(@PathVariable(value = "roomFloor")  String roomFloor,
                                   @PathVariable(value = "roomSize")  String roomSize)
     {
@@ -98,11 +104,11 @@ public class ConferenceRoomContreller
         return ServerResponse.success(res);
     }
 
-    @DeleteMapping("/delete/")//删除会议室
-    //遇到了BUG
-    public ServerResponse delete(@RequestBody ConferenceRoom conferenceRoom)
+    @DeleteMapping("/delete/{roomID}")//删除会议室
+    public ServerResponse DeleteRoom(@PathVariable(value = "roomID") int ID)
     {
-        logger.write(conferenceRoom.toString());
-        return ServerResponse.fail("未实现");
+        boolean flg =ConferenceRoomJDBC.DeleteRoom(ID);
+        if(!flg) return ServerResponse.fail("删除错误");
+        else return ServerResponse.success("");
     }
 }
