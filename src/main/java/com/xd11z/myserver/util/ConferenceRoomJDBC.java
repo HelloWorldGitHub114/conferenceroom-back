@@ -9,15 +9,16 @@ public class ConferenceRoomJDBC
 {
     /**
      * 查询数据库中所有的会议室信息
-     * @param SearchState 搜索状态：搜索全搜索/可用的/不可用的 会议室
+     * @param SearchState 0：不可用/1：可用的/2：全搜索
      * @return List<ConferenceRoom> 所有会议室信息
      */
     public static List<ConferenceRoom> SearchAll(int SearchState)
     {
         List<ConferenceRoom> res = new ArrayList<ConferenceRoom>();
         String QUERY_ROOM;
-        if(SearchState==0) QUERY_ROOM = "SELECT * FROM ConferenceRoom";
-        else QUERY_ROOM = "SELECT * FROM ConferenceRoom where used = 1";
+        if(SearchState==2) QUERY_ROOM = "SELECT * FROM ConferenceRoom";
+        else if(SearchState==1) QUERY_ROOM = "SELECT * FROM ConferenceRoom where used = 1";
+        else QUERY_ROOM = "SELECT * FROM ConferenceRoom where used = 0";
         Connection conn = null;
         PreparedStatement stmtRoom = null;
         ResultSet rsRooms = null;
@@ -62,7 +63,7 @@ public class ConferenceRoomJDBC
      * 按条件查询数据库中所有的会议室信息
      * @param roomFloor 楼层
      * @param roomSize 容量（人数）
-     * @param SearchState 搜索状态：搜索全搜索/可用的/不可用的 会议室
+     * @param SearchState 0：不可用/1：可用的/2：全搜索
      * @return List<ConferenceRoom> 符合条件的会议室信息
      */
     public static List<ConferenceRoom> SearchOnConditon(String roomFloor,String roomSize,int SearchState)
@@ -72,7 +73,7 @@ public class ConferenceRoomJDBC
         boolean hasCondition = false;
         try (Connection connection = DriverManager.getConnection(JDBCconnection.connectionurl))
         {
-            if (!roomFloor.isEmpty()  || !roomSize.isEmpty() || SearchState==1)  QUERY_ROOM += " WHERE";
+            if (!roomFloor.isEmpty()  || !roomSize.isEmpty() || SearchState!=2)  QUERY_ROOM += " WHERE";
             if (!roomFloor.isEmpty())
             {
                 QUERY_ROOM += " roomFloor = ?";
@@ -86,7 +87,14 @@ public class ConferenceRoomJDBC
                     hasCondition = true;
                 }
             }
-            if(SearchState==1)
+            if(SearchState==0)
+            {
+                if (hasCondition) QUERY_ROOM += " AND used = 0";
+                else {
+                    QUERY_ROOM += " used = 0";
+                }
+            }
+            else if(SearchState==1)
             {
                 if (hasCondition) QUERY_ROOM += " AND used = 1";
                 else {
@@ -159,15 +167,16 @@ public class ConferenceRoomJDBC
     }
 
     /** 获取会议室的所有可能楼层，用于下拉检索框
-     * @param SearchState 搜索状态：搜索全搜索/可用的/不可用的
+     * @param SearchState 0：不可用/1：可用的/2：全搜索
      * @return List<Map<String,Integer>>，排好序的楼层
      */
     public static List<Map<String,Integer>> GetDistinctFloor(int SearchState)
     {
         List<Map<String,Integer>> res = new ArrayList<>();
         String QUERY_ROOM;
-        if(SearchState==0) QUERY_ROOM = "SELECT DISTINCT RoomFloor FROM ConferenceRoom ORDER BY RoomFloor ASC;";
-        else QUERY_ROOM = "SELECT DISTINCT RoomFloor FROM ConferenceRoom where used=1 ORDER BY RoomFloor ASC;";
+        if(SearchState==2) QUERY_ROOM = "SELECT DISTINCT RoomFloor FROM ConferenceRoom ORDER BY RoomFloor ASC;";
+        else if(SearchState==1) QUERY_ROOM = "SELECT DISTINCT RoomFloor FROM ConferenceRoom where used=1 ORDER BY RoomFloor ASC;";
+        else QUERY_ROOM = "SELECT DISTINCT RoomFloor FROM ConferenceRoom where used=0 ORDER BY RoomFloor ASC;";
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -203,14 +212,15 @@ public class ConferenceRoomJDBC
     }
 
     /** 获取会议室的所有可能人数（容量），用于下拉检索框
-     * @param SearchState 搜索状态：搜索全搜索/可用的/不可用的
+     * @param SearchState 0：不可用/1：可用的/2：全搜索
      */
     public static List<Map<String,Integer>> GetDistinctSize(int SearchState)
     {
         List<Map<String,Integer>> res = new ArrayList<>();
         String QUERY_ROOM;
-        if(SearchState==0) QUERY_ROOM = "SELECT DISTINCT Size FROM ConferenceRoom ORDER BY Size ASC;";
-        else QUERY_ROOM = "SELECT DISTINCT Size FROM ConferenceRoom where used=1 ORDER BY Size ASC;";
+        if(SearchState==2) QUERY_ROOM = "SELECT DISTINCT Size FROM ConferenceRoom ORDER BY Size ASC;";
+        else if(SearchState==1) QUERY_ROOM = "SELECT DISTINCT Size FROM ConferenceRoom where used=1 ORDER BY Size ASC;";
+        else QUERY_ROOM = "SELECT DISTINCT Size FROM ConferenceRoom where used=0 ORDER BY Size ASC;";
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -288,9 +298,9 @@ public class ConferenceRoomJDBC
         return (res==1);
     }
 
-    public static int Count()
+    public static int GiveID()
     {
-        String QUERY = "SELECT Count(*) as cnt FROM ConferenceRoom";
+        String QUERY = "SELECT Max(roomID) as cnt FROM ConferenceRoom";
         int cnt=0;
         try (Connection connection = DriverManager.getConnection(JDBCconnection.connectionurl))
         {
@@ -346,7 +356,7 @@ public class ConferenceRoomJDBC
         try {
             conn = DriverManager.getConnection(JDBCconnection.connectionurl);
             stmt = conn.prepareStatement(UPDATEState);
-            stmt.setInt(1,Count()+1);
+            stmt.setInt(1,GiveID()+1);
             stmt.setString(2,conferenceRoom.roomNo);
             stmt.setString(3,conferenceRoom.roomName);
             stmt.setInt(4,conferenceRoom.roomFloor);
