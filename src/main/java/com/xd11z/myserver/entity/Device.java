@@ -27,7 +27,7 @@ public class Device implements Serializable {
 
     public Integer dnumber;
 
-    public Integer roomId;
+    public Integer roomID;
 
     public Integer getId() {
         return did;
@@ -46,11 +46,11 @@ public class Device implements Serializable {
     }
 
     public Integer getRoomId() {
-        return roomId;
+        return roomID;
     }
 
-    public void setRoomId(Integer roomId) {
-        this.roomId = roomId;
+    public void setRoomId(Integer roomID) {
+        this.roomID = roomID;
     }
 
     public Integer getDnumber() {
