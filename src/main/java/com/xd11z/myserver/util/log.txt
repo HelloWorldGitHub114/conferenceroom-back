@@ -1,4 +1,9 @@
-2023-12-04 11:26:31   {"password":"21009200496","username":"yty"}
+2023-12-03 20:47:52   {"roomArea":30,"roomFloor":"1","roomName":"会议室一号","roomNo":"1001","roomSize":100,"roomState":1,"roomType":"大型会议室"}
+2023-12-03 20:50:05   {"roomArea":15,"roomFloor":"2","roomName":"会议室二号","roomNo":"1002","roomSize":120,"roomState":1,"roomType":"小型会议室"}
+2023-12-03 20:50:22   {"roomArea":15,"roomFloor":"4","roomName":"会议室二号","roomNo":"1002","roomSize":120,"roomState":1,"roomType":"小型会议室"}
+2023-12-03 20:58:37   {"roomArea":30,"roomFloor":"1","roomName":"会议室一号","roomNo":"1001","roomSize":100,"roomState":1,"roomType":"大型会议室"}
+2023-12-03 21:31:30   {"roomArea":15,"roomFloor":"2","roomName":"会议室二号","roomNo":"1002","roomSize":50,"roomState":1,"roomType":"小型会议室"}
+2023-12-03 21:31:35   {"roomArea":15,"roomFloor":"2","roomName":"会议室二号","roomNo":"1004","roomSize":50,"roomState":1,"roomType":"小型会议室"}
 2023-12-04 16:37:13   {"password":"adminn","username":"adminn"}
 2023-12-04 16:59:02   jqdqw,114514
 2023-12-04 17:02:56   com.xd11z.myserver.controller.ConferenceRoomContreller$testObject@19ac2b23
