@@ -30,4 +30,60 @@ public class ConferenceRoom implements Serializable{
     {
         this.roomState=1;
     }
+
+    public int getRoomID() {
+        return roomID;
+    }
+
+    public void setRoomID(int roomID) {
+        this.roomID = roomID;
+    }
+
+    public String getRoomNo() {
+        return roomNo;
+    }
+
+    public void setRoomNo(String roomNo) {
+        this.roomNo = roomNo;
+    }
+
+    public String getRoomName() {
+        return roomName;
+    }
+
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
+    }
+
+    public int getRoomFloor() {
+        return roomFloor;
+    }
+
+    public void setRoomFloor(int roomFloor) {
+        this.roomFloor = roomFloor;
+    }
+
+    public int getRoomSize() {
+        return roomSize;
+    }
+
+    public void setRoomSize(int roomSize) {
+        this.roomSize = roomSize;
+    }
+
+    public float getRoomArea() {
+        return roomArea;
+    }
+
+    public void setRoomArea(float roomArea) {
+        this.roomArea = roomArea;
+    }
+
+    public int getRoomState() {
+        return roomState;
+    }
+
+    public void setRoomState(int roomState) {
+        this.roomState = roomState;
+    }
 }

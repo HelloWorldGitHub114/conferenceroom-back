@@ -36,6 +36,8 @@ public class LoginController {
         {
             //在header附加上token，以后前端可以拿着这个来访问后端了（其实这里放在数据包里也可以）
             response.setHeader("Authorization", TokenTool.getToken(user));
+            //将Authorization在响应首部暴露出来
+            response.setHeader("Access-control-Expose-Headers", "Authorization");
             //成功可以new一个用户信息对象，然后存到服务器应答包中返回
             UserInfo userInfo = user.getInfo();
             return ServerResponse.success(userInfo);
