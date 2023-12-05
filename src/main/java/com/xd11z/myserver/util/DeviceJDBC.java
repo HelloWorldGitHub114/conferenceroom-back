@@ -1,6 +1,5 @@
 package com.xd11z.myserver.util;
 
-import com.xd11z.myserver.entity.ConferenceRoom;
 import com.xd11z.myserver.entity.Device;
 import java.sql.*;
 import java.util.*;
