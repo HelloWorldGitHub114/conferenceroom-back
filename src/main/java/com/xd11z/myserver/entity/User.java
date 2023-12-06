@@ -24,7 +24,7 @@ public class User implements Serializable {
      * @return 用户信息数据，前端只需要拿这个
      */
     public UserInfo getInfo() {
-        return new UserInfo(this.username,this.role);
+        return new UserInfo(this.username,this.role,this.userID);
     }
 
     public String getUserID() {

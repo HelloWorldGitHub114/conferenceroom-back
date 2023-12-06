@@ -31,7 +31,7 @@ public class ConRApplyRecord implements Serializable
     public String digest;//摘要
     public String UserID;//关联的用户ID
 
-    public Integer roomId;//会议室id
+    public Integer roomID;//会议室id
     public String roomNo;//会议室门牌号
     public Integer roomFloor;//会议室楼层
     public String roomName;//会议室名称
@@ -135,13 +135,13 @@ public class ConRApplyRecord implements Serializable
         this.digest = digest;
     }
 
-    // 获取和设置 roomId 的方法
-    public Integer getRoomId() {
-        return roomId;
+    // 获取和设置 roomID 的方法
+    public Integer getroomID() {
+        return roomID;
     }
 
-    public void setRoomId(Integer roomId) {
-        this.roomId = roomId;
+    public void setroomID(Integer roomID) {
+        this.roomID = roomID;
     }
 
     // 获取和设置 roomNo 的方法
@@ -182,7 +182,7 @@ public class ConRApplyRecord implements Serializable
 
     public ConRApplyRecord(Integer applyId, Integer auditStatus, String applyTime, String auditTime,
                            String rejectReason, String startTime, String endTime, String theme,
-                           Integer personCount, String digest, String UserID, Integer roomId,
+                           Integer personCount, String digest, String UserID, Integer roomID,
                            String roomNo, Integer roomFloor, String roomName) {
         this.applyId = applyId;
         this.auditStatus = auditStatus;
@@ -195,7 +195,7 @@ public class ConRApplyRecord implements Serializable
         this.personCount = personCount;
         this.digest = digest;
         this.UserID = UserID;
-        this.roomId = roomId;
+        this.roomID = roomID;
         this.roomNo = roomNo;
         this.roomFloor = roomFloor;
         this.roomName = roomName;

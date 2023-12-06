@@ -20,8 +20,16 @@ public class UserService {
     {
         int stat= LoginJDBC.checkUserType(userLogin.username,userLogin.password);//调用jdbc程序 获取返回值
         User res=null;
-        if(stat==0) res=new User("0",userLogin.username,userLogin.password,"user");
-        else if(stat==1) res=new User("1",userLogin.username,userLogin.password,"admin");
+        if(stat==0)
+        {
+            String ID=LoginJDBC.SearchUserID(userLogin.username,userLogin.password);
+            res=new User(ID,userLogin.username,userLogin.password,"user");
+        }
+        else if(stat==1)
+        {
+            String ID=LoginJDBC.SearchAdminID(userLogin.username,userLogin.password);
+            res=new User(ID,userLogin.username,userLogin.password,"admin");
+        }
         else if(stat==2) msg.append("用户名不存在！");
         else if(stat==3) msg.append("用户名与密码不匹配！");
         else msg.append("未知错误！");

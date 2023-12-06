@@ -9,9 +9,11 @@ public class UserInfo implements Serializable {
 
     public String username; //用户名
     public String role; //用户角色
-    public UserInfo(String username, String role) {
+    public String userID;
+    public UserInfo(String username, String role, String userID) {
         this.username = username;
         this.role = role;
+        this.userID=userID;
     }
     public String getUsername() {
         return username;
