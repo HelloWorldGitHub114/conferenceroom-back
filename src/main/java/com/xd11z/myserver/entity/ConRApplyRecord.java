@@ -3,36 +3,43 @@ package com.xd11z.myserver.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
-public class ConRApplyRecord
+import java.io.Serializable;
+
+public class ConRApplyRecord implements Serializable
 {
-    private Integer applyId;//申请的id -> 主键
-    private Integer auditStatus; //申请的审核状态
+    public Integer applyId;//申请的id -> 主键
+    public Integer auditStatus; //申请的审核状态
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private String applyTime;//申请的时间
-
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private String auditTime; //审核的时间
-    private String rejectReason; //驳回的理由
+    public String applyTime;//申请的时间
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private String startTime; //会议的开始时间
+    public String auditTime; //审核的时间
+    public String rejectReason; //驳回的理由
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private String endTime; //会议的结束时间
+    public String startTime; //会议的开始时间
 
-    private String theme; //会议主题
-    private Integer personCount;//会议人数
-    private String digest;//摘要
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    public String endTime; //会议的结束时间
 
-    private Integer roomId;//会议室id
-    private String roomNo;//会议室门牌号
-    private String roomFloor;//会议室楼层
-    private String roomName;//会议室名称
+    public String theme; //会议主题
+    public Integer personCount;//会议人数
+    public String digest;//摘要
+    public String UserID;//关联的用户ID
+
+    public Integer roomId;//会议室id
+    public String roomNo;//会议室门牌号
+    public Integer roomFloor;//会议室楼层
+    public String roomName;//会议室名称
     private Integer deleted;//有没有被删除
+
+    public ConRApplyRecord() {
+
+    }
 
     // 获取和设置 applyId 的方法
     public Integer getApplyId() {
@@ -50,6 +57,10 @@ public class ConRApplyRecord
 
     public void setAuditStatus(Integer auditStatus) {
         this.auditStatus = auditStatus;
+    }
+
+    public void setUserID(String ID) {
+        this.UserID = ID;
     }
 
     // 获取和设置 applyTime 的方法
@@ -143,11 +154,11 @@ public class ConRApplyRecord
     }
 
     // 获取和设置 roomFloor 的方法
-    public String getRoomFloor() {
+    public Integer getRoomFloor() {
         return roomFloor;
     }
 
-    public void setRoomFloor(String roomFloor) {
+    public void setRoomFloor(Integer roomFloor) {
         this.roomFloor = roomFloor;
     }
 
@@ -169,4 +180,24 @@ public class ConRApplyRecord
         this.deleted = deleted;
     }
 
+    public ConRApplyRecord(Integer applyId, Integer auditStatus, String applyTime, String auditTime,
+                           String rejectReason, String startTime, String endTime, String theme,
+                           Integer personCount, String digest, String UserID, Integer roomId,
+                           String roomNo, Integer roomFloor, String roomName) {
+        this.applyId = applyId;
+        this.auditStatus = auditStatus;
+        this.applyTime = applyTime;
+        this.auditTime = auditTime;
+        this.rejectReason = rejectReason;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.theme = theme;
+        this.personCount = personCount;
+        this.digest = digest;
+        this.UserID = UserID;
+        this.roomId = roomId;
+        this.roomNo = roomNo;
+        this.roomFloor = roomFloor;
+        this.roomName = roomName;
+    }
 }

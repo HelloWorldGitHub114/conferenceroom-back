@@ -9,45 +9,38 @@ import java.util.*;
 @RestController
 @RequestMapping("/record/")
 public class RecordController {
-//    @GetMapping("listbyconditions/{auditState}/{currentPage}")
-//    public ServerResponse listByConditions(@PathVariable("auditState") String auditState,
-//                                   @PathVariable("currentPage") Integer currentPage)
-//    {
-//        Integer state = Integer.valueOf(auditState);
-//        List<ConRApplyRecord> res = new ArrayList<>();
-//        //这里传入当前页数 到了service层转化为记录的开始下标给mapper
-//        return ServerResponse.success(res);
-//    }
 
-//    @PutMapping("/changeauditstate")
-//    public ServerResponse changeAuditState(@RequestBody Map<String,Object> map)
-//    {
-//            return ServerResponse.success("");
-//    }
-
-@GetMapping("listbyconditions/{auditState}/{currentPage}/{deleted}")
-public ServerResponse listByConditions(@PathVariable("auditState") Integer auditState,
-                                       @PathVariable("currentPage") Integer currentPage,
-                                       @PathVariable("deleted") Integer deleted) {
-    try {
-
-
-        List<ConRApplyRecord> records;
-
-        if(deleted==2){
-            records = RecordJDBC.listAllRecordsByAuditStatus(auditState, currentPage);
+    @GetMapping("listbyconditions/{auditState}/{currentPage}/{deleted}")
+    public ServerResponse listByConditions(@PathVariable("auditState") Integer auditState,
+                                           @PathVariable("currentPage") Integer currentPage,
+                                           @PathVariable("deleted") Integer deleted) {
+        try {
+            List<ConRApplyRecord> records;
+            if(deleted==2){
+                records = RecordJDBC.listAllRecordsByAuditStatus(auditState, currentPage);
+            }
+            else{
+                records = RecordJDBC.listByConditions(auditState, currentPage, deleted);
+            }
+            return ServerResponse.success(records);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return ServerResponse.fail("查询失败！");
         }
-        else{
-            records = RecordJDBC.listByConditions(auditState, currentPage, deleted);
-        }
-
-
-        return ServerResponse.success(records);
-    } catch (NumberFormatException e) {
-        e.printStackTrace();
-        return ServerResponse.fail("查询失败！");
     }
-}
+
+    @GetMapping("gettotal/{auditState}/{deleted}")
+    public ServerResponse listByConditions(@PathVariable("auditState") Integer auditState,
+                                           @PathVariable("deleted") Integer deleted) {
+        try {
+            int num = RecordJDBC.getTotalnumber(auditState, deleted);
+            return ServerResponse.success(num);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return ServerResponse.fail("查询失败！");
+        }
+    }
+
 }
 
 

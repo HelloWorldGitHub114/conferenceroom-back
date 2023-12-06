@@ -3,12 +3,7 @@ import com.xd11z.myserver.entity.*;
 import java.sql.*;
 import java.util.*;
 
-
-
-
-
     public class RecordJDBC {
-
 
         public static Integer PAGE_SIZE=7;
 
@@ -48,10 +43,10 @@ import java.util.*;
                     record.setDigest(resultSet.getString("MeetingDigest"));
                     record.setRoomId(resultSet.getInt("RoomId"));
                     record.setRoomNo(resultSet.getString("RoomNo"));
-                    record.setRoomFloor(resultSet.getString("RoomFloor"));
+                    record.setRoomFloor(resultSet.getInt("RoomFloor"));
                     record.setRoomName(resultSet.getString("RoomName"));
                     record.setDeleted(resultSet.getInt("IsDeleted"));
-
+                    record.setUserID(resultSet.getString("UserID"));
                     // 将 record 添加到列表
                     records.add(record);
                 }
@@ -73,8 +68,6 @@ import java.util.*;
             return records;
         }
 
-
-
         public static List<ConRApplyRecord> listByConditions(int auditState, int currentPage, int deleted) {
             Connection connection = null;
             PreparedStatement preparedStatement = null;
@@ -83,7 +76,6 @@ import java.util.*;
 
             try {
                 connection = DriverManager.getConnection(JDBCconnection.connectionurl);
-
                 // 构建 SQL 查询语句
                 String query = "SELECT * FROM Reservation WHERE AuditStatus = ? AND IsDeleted = ? ORDER BY ApplyId OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
                 preparedStatement = connection.prepareStatement(query);
@@ -91,10 +83,8 @@ import java.util.*;
                 preparedStatement.setInt(2, deleted);
                 preparedStatement.setInt(3, (currentPage - 1) * PAGE_SIZE);  // Assuming PAGE_SIZE is a constant
                 preparedStatement.setInt(4, PAGE_SIZE);
-
                 // 执行查询
                 resultSet = preparedStatement.executeQuery();
-
                 // 处理查询结果
                 while (resultSet.next()) {
                     ConRApplyRecord record = new ConRApplyRecord();
@@ -110,10 +100,10 @@ import java.util.*;
                     record.setDigest(resultSet.getString("MeetingDigest"));
                     record.setRoomId(resultSet.getInt("RoomId"));
                     record.setRoomNo(resultSet.getString("RoomNo"));
-                    record.setRoomFloor(resultSet.getString("RoomFloor"));
+                    record.setRoomFloor(resultSet.getInt("RoomFloor"));
                     record.setRoomName(resultSet.getString("RoomName"));
                     record.setDeleted(resultSet.getInt("IsDeleted"));
-
+                    record.setUserID(resultSet.getString("UserID"));
                     // 将 record 添加到列表
                     records.add(record);
                 }
@@ -131,11 +121,43 @@ import java.util.*;
                     e.printStackTrace();
                 }
             }
-
             return records;
         }
 
-
+        public static int getTotalnumber(int auditState, int deleted) {
+            Connection connection = null;
+            PreparedStatement preparedStatement = null;
+            ResultSet resultSet = null;
+            int res=0;
+            try {
+                connection = DriverManager.getConnection(JDBCconnection.connectionurl);
+                // 构建 SQL 查询语句
+                String query;
+                if(deleted==0) query="SELECT count(*) as cnt FROM Reservation WHERE AuditStatus = ? AND IsDeleted = 0 ";
+                else if(deleted==1) query="SELECT count(*) as cnt FROM Reservation WHERE AuditStatus = ? AND IsDeleted = 1 ";
+                else query="SELECT count(*) as cnt FROM Reservation WHERE AuditStatus = ?";
+                preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setInt(1, auditState);
+                // 执行查询
+                resultSet = preparedStatement.executeQuery();
+                // 处理查询结果
+                if(resultSet.next()) res=resultSet.getInt(1);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                // 处理异常，返回空列表或者抛出自定义异常，具体情况根据需求而定
+                return res;
+            } finally {
+                // 关闭数据库连接
+                try {
+                    if (resultSet != null) resultSet.close();
+                    if (preparedStatement != null) preparedStatement.close();
+                    if (connection != null) connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            return res;
+        }
     }
 
 
