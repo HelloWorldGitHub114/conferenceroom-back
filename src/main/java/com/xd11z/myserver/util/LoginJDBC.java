@@ -77,4 +77,72 @@ public class LoginJDBC {
             }
         }
     }
+
+    public static String SearchUserID(String username, String password)
+    {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        String ID = "";
+        int res=0;
+        try {
+            connection = DriverManager.getConnection(JDBCconnection.connectionurl);
+            // 构建 SQL 查询语句
+            String query="SELECT UserID FROM ReservationUsers WHERE Username = ? And Password = ?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password);
+            // 执行查询
+            resultSet = preparedStatement.executeQuery();
+            // 处理查询结果
+            if(resultSet.next()) ID=resultSet.getString(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // 处理异常，返回空列表或者抛出自定义异常，具体情况根据需求而定
+        } finally {
+            // 关闭数据库连接
+            try {
+                if (resultSet != null) resultSet.close();
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return ID;
+    }
+
+    public static String SearchAdminID(String username, String password)
+    {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        String ID = "";
+        int res=0;
+        try {
+            connection = DriverManager.getConnection(JDBCconnection.connectionurl);
+            // 构建 SQL 查询语句
+            String query="SELECT UserID FROM Administrators WHERE Username = ? And Password = ?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password);
+            // 执行查询
+            resultSet = preparedStatement.executeQuery();
+            // 处理查询结果
+            if(resultSet.next()) ID=resultSet.getString(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // 处理异常，返回空列表或者抛出自定义异常，具体情况根据需求而定
+        } finally {
+            // 关闭数据库连接
+            try {
+                if (resultSet != null) resultSet.close();
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return ID;
+    }
 }

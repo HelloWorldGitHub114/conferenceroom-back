@@ -30,7 +30,7 @@ public class RecordController {
     }
 
     @GetMapping("gettotal/{auditState}/{deleted}")
-    public ServerResponse listByConditions(@PathVariable("auditState") Integer auditState,
+    public ServerResponse gettotalbyadmin(@PathVariable("auditState") Integer auditState,
                                            @PathVariable("deleted") Integer deleted) {
         try {
             int num = RecordJDBC.getTotalnumber(auditState, deleted);
@@ -41,6 +41,34 @@ public class RecordController {
         }
     }
 
+    @GetMapping("gettotalbyuser/{userID}/{auditState}")
+    public ServerResponse gettotalbyuser(@PathVariable("userID") String userID,
+                                           @PathVariable("auditState") Integer auditState) {
+//        try {
+//            int num = RecordJDBC.getTotalnumberbyuser(userID, auditState);
+//            return ServerResponse.success(num);
+//        } catch (NumberFormatException e) {
+//            e.printStackTrace();
+//            return ServerResponse.fail("查询失败！");
+//        }
+        return ServerResponse.success(20);
+    }
+
+    @GetMapping("getbyuser/{userID}/{auditState}/{currentPage}")
+    public ServerResponse getbyuser(@PathVariable("userID") String userID,
+                                    @PathVariable("auditState") Integer auditState,
+                                    @PathVariable("currentPage") Integer currentPage)
+    {
+//        try {
+//            List<ConRApplyRecord> records;
+//            records = RecordJDBC.listByConditions(auditState, currentPage, deleted);
+//            return ServerResponse.success(records);
+//        } catch (NumberFormatException e) {
+//            e.printStackTrace();
+//            return ServerResponse.fail("查询失败！");
+//        }
+        return ServerResponse.fail("查询失败！");
+    }
 }
 
 
