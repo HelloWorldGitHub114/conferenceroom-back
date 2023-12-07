@@ -1,6 +1,9 @@
 package com.xd11z.myserver.util;
 import com.xd11z.myserver.entity.*;
+
+import java.lang.reflect.Field;
 import java.sql.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.time.*;
     public class RecordJDBC {
@@ -230,6 +233,9 @@ import java.time.*;
             ResultSet resultSet = null;
             List<Integer> conflictIds = new ArrayList<>();
 
+            System.out.println(roomId);
+            System.out.println(startTime);
+            System.out.println(endTime);
             try {
                 connection = DriverManager.getConnection(JDBCconnection.connectionurl);
 
@@ -249,6 +255,7 @@ import java.time.*;
 
                 while (resultSet.next()) {
                     conflictIds.add(resultSet.getInt("ApplyId"));
+                    System.out.println("Conflict ApplyId: " + resultSet.getInt("ApplyId"));
                 }
             } catch (SQLException e) {
                 e.printStackTrace();  // 实际应用中应该有更合适的错误处理
@@ -271,6 +278,12 @@ import java.time.*;
 
             return conflictIds;
         }
+
+
+
+
+
+
 
         public static int deleteRecordById(Integer applyId) {
             Connection connection = null;
@@ -387,9 +400,8 @@ import java.time.*;
             try {
                 connection = DriverManager.getConnection(JDBCconnection.connectionurl);
 
-                // 假设存在名为Reservation的表
                 String sql = "SELECT * FROM Reservation " +
-                        "WHERE UserID = ? AND AuditStatus = ? " +
+                        "WHERE UserID = ? AND AuditStatus = ? AND IsDeleted = 0 " +
                         "ORDER BY " +
                         "CASE " +
                         "   WHEN AuditStatus = 0 THEN 0 " +  // 未审核
@@ -432,6 +444,159 @@ import java.time.*;
 
             return records;
         }
+
+
+
+        public static int deleteRecordByUser(Integer applyId)
+        {
+            Connection connection = null;
+            PreparedStatement preparedStatement = null;
+            try {
+                connection = DriverManager.getConnection(JDBCconnection.connectionurl);
+                String sql ="""
+                            UPDATE Reservation
+                            SET IsDeleted = 1
+                            WHERE ApplyId = ?;
+                            """;
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, applyId);
+                return preparedStatement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return 0;
+            } finally {
+                try {
+                    if (preparedStatement != null) {
+                        preparedStatement.close();
+                    }
+                    if (connection != null) {
+                        connection.close();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+
+        // 获取当前最大的ApplyId
+        private static int getMaxApplyId(Connection connection) throws SQLException {
+            int maxApplyId = 0;
+
+            String sql = "SELECT MAX(ApplyId) AS maxApplyId FROM Reservation";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                 ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    maxApplyId = resultSet.getInt("maxApplyId");
+                }
+            }
+
+            return maxApplyId;
+        }
+        // 添加申请记录
+        public static int addRecord(ConRApplyRecord record) {
+            Connection connection = null;
+            PreparedStatement preparedStatement = null;
+            ResultSet resultSet = null;
+
+            try {
+                connection = DriverManager.getConnection(JDBCconnection.connectionurl);
+
+                // 获取当前最大的ApplyId
+                int maxApplyId = getMaxApplyId(connection);
+
+                // 生成新的ApplyId
+                int newApplyId = maxApplyId + 1;
+
+                // 打印所有属性值
+                System.out.println("New ApplyId: " + newApplyId);
+
+                // 使用反射获取所有属性
+                Field[] fields = ConRApplyRecord.class.getDeclaredFields();
+                for (Field field : fields) {
+                    field.setAccessible(true);
+                    try {
+                        Object value = field.get(record);
+                        System.out.println(field.getName() + ": " + value);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                // 查询会议室信息
+                String roomInfoQuery = "SELECT RoomNo, RoomFloor, RoomName FROM ConferenceRoom WHERE RoomID = ?";
+                preparedStatement = connection.prepareStatement(roomInfoQuery);
+                preparedStatement.setInt(1, record.getroomID());
+                resultSet = preparedStatement.executeQuery();
+
+                String roomNo = null;
+                int roomFloor = 0;
+                String roomName = null;
+
+                if (resultSet.next()) {
+                    roomNo = resultSet.getString("RoomNo");
+                    roomFloor = resultSet.getInt("RoomFloor");
+                    roomName = resultSet.getString("RoomName");
+                }
+
+                // 获取当前时间
+                LocalDateTime currentDateTime = LocalDateTime.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                String currentDateTimeStr = currentDateTime.format(formatter);
+
+                // 获取日期部分
+                String selectDate = record.getselectDate();
+
+                // 设置开始时间和结束时间
+                String startTimeStr = selectDate + " " + record.getStartTime();
+                String endTimeStr = selectDate + " " + record.getEndTime();
+
+                // 插入申请记录
+                String insertRecordQuery = "INSERT INTO Reservation (ApplyId, AuditStatus, ApplyTime, AuditTime, RejectReason, " +
+                        "StartTime, EndTime, Theme, PersonCount, MeetingDigest, UserID, RoomId, RoomNo, RoomFloor, RoomName, IsDeleted, selectDate) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+                preparedStatement = connection.prepareStatement(insertRecordQuery);
+                preparedStatement.setInt(1, newApplyId);
+                preparedStatement.setInt(2, 0); // 申请状态置为0，表示未审批
+                preparedStatement.setString(3, currentDateTimeStr);  // 使用当前时间作为申请时间
+                preparedStatement.setString(4, null); // 审核时间置为null
+                preparedStatement.setString(5, null); // 拒绝原因置为null
+                preparedStatement.setString(6, startTimeStr);
+                preparedStatement.setString(7, endTimeStr);
+                preparedStatement.setString(8, record.getTheme());
+                preparedStatement.setInt(9, record.getPersonCount());
+                preparedStatement.setString(10, record.getDigest());
+                preparedStatement.setString(11, record.getUserID());
+                preparedStatement.setInt(12, record.getroomID());
+                preparedStatement.setString(13, roomNo);
+                preparedStatement.setInt(14, roomFloor);
+                preparedStatement.setString(15, roomName);
+                preparedStatement.setInt(16, 0); // IsDeleted 置为0
+                preparedStatement.setString(17, record.getselectDate());
+                preparedStatement.executeUpdate();
+                return newApplyId;
+            } catch (SQLException e) {
+                e.printStackTrace();  // 在真实应用中适当地处理此异常
+                return -1;  // 返回错误代码
+            } finally {
+                // 关闭资源
+                try {
+                    if (resultSet != null) {
+                        resultSet.close();
+                    }
+                    if (preparedStatement != null) {
+                        preparedStatement.close();
+                    }
+                    if (connection != null) {
+                        connection.close();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();  // 在真实应用中适当地处理此异常
+                }
+            }
+        }
+
 
 
 

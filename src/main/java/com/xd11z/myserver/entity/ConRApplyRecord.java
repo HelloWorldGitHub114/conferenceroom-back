@@ -26,6 +26,10 @@ public class ConRApplyRecord implements Serializable
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public String endTime; //会议的结束时间
 
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    public String selectDate;  // 预约日期
+
     public String theme; //会议主题
     public Integer personCount;//会议人数
     public String digest;//摘要
@@ -180,10 +184,18 @@ public class ConRApplyRecord implements Serializable
         this.deleted = deleted;
     }
 
+    public String getUserID() {return this.UserID; }
+
+    // 获取和设置 selectDate 的方法
+    public String getselectDate() { return selectDate; }
+
+    public void setselectDate(String selectDate) { this.selectDate = selectDate; }
+
+
     public ConRApplyRecord(Integer applyId, Integer auditStatus, String applyTime, String auditTime,
                            String rejectReason, String startTime, String endTime, String theme,
                            Integer personCount, String digest, String UserID, Integer roomID,
-                           String roomNo, Integer roomFloor, String roomName) {
+                           String roomNo, Integer roomFloor, String roomName, String selectDate) {
         this.applyId = applyId;
         this.auditStatus = auditStatus;
         this.applyTime = applyTime;
@@ -199,6 +211,7 @@ public class ConRApplyRecord implements Serializable
         this.roomNo = roomNo;
         this.roomFloor = roomFloor;
         this.roomName = roomName;
+        this.selectDate=selectDate;
     }
 
     public ConRApplyRecord(ResultSet resultSet) throws SQLException {
@@ -219,5 +232,8 @@ public class ConRApplyRecord implements Serializable
         this.roomFloor = resultSet.getInt("RoomFloor");
         this.roomName = resultSet.getString("RoomName");
         this.deleted = resultSet.getInt("IsDeleted");
+        this.selectDate = resultSet.getString("selectDate");
     }
+
+
 }

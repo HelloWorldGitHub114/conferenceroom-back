@@ -11,14 +11,15 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.time.temporal.ChronoUnit;
 
 @RestController
-@RequestMapping("/record/")
+@RequestMapping("/record")
 public class RecordController {
 
-    @GetMapping("listbyconditions/{auditState}/{currentPage}/{deleted}")
+    @GetMapping("/listbyconditions/{auditState}/{currentPage}/{deleted}")
     public ServerResponse listByConditions(@PathVariable("auditState") Integer auditState,
                                            @PathVariable("currentPage") Integer currentPage,
                                            @PathVariable("deleted") Integer deleted) {
@@ -37,7 +38,7 @@ public class RecordController {
         }
     }
 
-    @GetMapping("gettotal/{auditState}/{deleted}")
+    @GetMapping("/gettotal/{auditState}/{deleted}")
     public ServerResponse gettotalbyadmin(@PathVariable("auditState") Integer auditState,
                                            @PathVariable("deleted") Integer deleted) {
         try {
@@ -61,52 +62,55 @@ public class RecordController {
         }
     }
 
-    @GetMapping("getbyuser/{userID}/{auditState}/{currentPage}")
+    @GetMapping("/getbyuser/{userID}/{auditState}/{currentPage}")
     public ServerResponse getbyuser(@PathVariable("userID") String userID,
                                     @PathVariable("auditState") Integer auditState,
-                                    @PathVariable("currentPage") String currentPageStr) {
+                                    @PathVariable("currentPage") Integer currentPage) {
         try {
-            // 将currentPageStr转换为整数
-            Integer currentPage = Integer.parseInt(currentPageStr);
+
 
             List<ConRApplyRecord> records = RecordJDBC.listByConditionsForUsers(userID, auditState, currentPage);
             return ServerResponse.success(records);
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            return ServerResponse.fail("查询失败！参数错误：currentPage应为整数。");
+            return ServerResponse.fail("查询失败！");
         }
     }
 
 
+    //有问题，就算有冲突也还是能通过
     @PutMapping("/changeauditstate")
     public ServerResponse changeAuditState(@RequestBody Map<String, Object> map) throws ParseException {
         if ((Integer) map.get("auditState") == 1) {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date date = simpleDateFormat.parse((String) map.get("startTime"));
-            if (System.currentTimeMillis() > date.getTime()) {
-                return ServerResponse.fail("无法通过,开始时间已过,请驳回");
-            }
-
-            // 去掉毫秒部分
+            // 去掉毫秒
             String startTimeString = ((String) map.get("startTime")).split("\\.")[0];
             String endTimeString = ((String) map.get("endTime")).split("\\.")[0];
 
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneOffset.UTC);
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             LocalDateTime startTime = LocalDateTime.parse(startTimeString, formatter);
             LocalDateTime endTime = LocalDateTime.parse(endTimeString, formatter);
 
+
+
+            // 检查时间冲突
             List<Integer> list = RecordJDBC.searchTimeConflict((Integer) map.get("roomID"), startTime, endTime);
             if (list.size() > 0) {
                 return ServerResponse.fail("无法通过,时间已冲突,请驳回请求并说明理由");
             } else {
+                // 更新审批状态和时间
                 RecordJDBC.updateAuditStatusAndTime((Integer) map.get("applyId"), (Integer) map.get("auditState"));
 
+                // 构建响应数据
                 Map<String, Object> map1 = new HashMap<>();
                 map1.put("theme", map.get("theme"));
                 map1.put("roomFloor", map.get("roomFloor"));
                 map1.put("roomNo", map.get("roomNo"));
                 map1.put("startTime", startTime.format(formatter)); // 格式化为字符串
                 map1.put("endTime", endTime.format(formatter)); // 格式化为字符串
+
+                // 输出结果
+                System.out.println(map1);
 
                 return ServerResponse.success("");
             }
@@ -122,7 +126,10 @@ public class RecordController {
     }
 
 
-    @DeleteMapping("/deleteby/{applyId}")
+
+
+
+    @DeleteMapping("/deleteby/{applyId}")//管理员删除申请
     public ServerResponse deleteByIdAdmin(@PathVariable("applyId") Integer applyId) {
         int rowsAffected = RecordJDBC.deleteRecordById(applyId);
 
@@ -133,9 +140,31 @@ public class RecordController {
         }
     }
 
+    @DeleteMapping("/delete/{applyId}")//用户删除申请
+    public ServerResponse deleteByIdUser(@PathVariable("applyId") Integer applyId)
+    {
+        logger.write("UserDeleted:"+Integer.toString(applyId));
+        int rowsAffected = RecordJDBC.deleteRecordByUser(applyId);
+        if (rowsAffected > 0)
+        {
+            return ServerResponse.success("删除成功");
+        } else {
+            return ServerResponse.fail("删除失败");
+        }
+    }
 
 
-
+    @PutMapping("/recallapply")//用户撤销申请
+    public ServerResponse changeAuditState(@RequestBody ConRApplyRecord r)
+    {
+        logger.write("UserRecall:"+Integer.toString(r.applyId));
+        int rowsAffected = RecordJDBC.deleteRecordById(r.applyId);
+        if (rowsAffected > 0) {
+            return ServerResponse.success("撤销成功");
+        } else {
+            return ServerResponse.fail("撤销失败");
+        }
+    }
 }
 
 
