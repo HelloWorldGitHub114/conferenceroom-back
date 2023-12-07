@@ -435,6 +435,36 @@ import java.time.*;
 
 
 
+        public static int deleteRecordByUser(Integer applyId)
+        {
+            Connection connection = null;
+            PreparedStatement preparedStatement = null;
+            try {
+                connection = DriverManager.getConnection(JDBCconnection.connectionurl);
+                String sql ="""
+                            UPDATE Reservation
+                            SET IsDeleted = 1
+                            WHERE ApplyId = ?;
+                            """;
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, applyId);
+                return preparedStatement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return 0;
+            } finally {
+                try {
+                    if (preparedStatement != null) {
+                        preparedStatement.close();
+                    }
+                    if (connection != null) {
+                        connection.close();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
 

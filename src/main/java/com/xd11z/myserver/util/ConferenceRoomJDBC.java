@@ -35,7 +35,9 @@ public class ConferenceRoomJDBC
                 int roomSize = rsRooms.getInt("Size");
                 float roomArea = rsRooms.getFloat("Area");
                 int roomState = rsRooms.getInt("used");
-                ConferenceRoom R = new ConferenceRoom(roomID,roomNo,roomName,roomFloor,roomSize,roomArea,roomState);
+                String roomDes = rsRooms.getString("Description");
+                String roomphoto = rsRooms.getString("PhotoPath");
+                ConferenceRoom R = new ConferenceRoom(roomID,roomNo,roomName,roomFloor,roomSize,roomArea,roomState,roomDes,roomphoto);
                 res.add(R);
             }
         }
@@ -117,7 +119,9 @@ public class ConferenceRoomJDBC
                         int RsroomSize = rsRooms.getInt("Size");
                         float roomArea = rsRooms.getFloat("Area");
                         int roomState = rsRooms.getInt("used");
-                        ConferenceRoom R = new ConferenceRoom(roomID,roomNo,roomName,RsroomFloor,RsroomSize,roomArea,roomState);
+                        String roomDes = rsRooms.getString("Description");
+                        String roomphoto = rsRooms.getString("PhotoPath");
+                        ConferenceRoom R = new ConferenceRoom(roomID,roomNo,roomName,RsroomFloor,RsroomSize,roomArea,roomState,roomDes,roomphoto);
                         res.add(R);
                     }
                 }
@@ -393,7 +397,9 @@ public class ConferenceRoomJDBC
                 int roomSize = rs.getInt("Size");
                 float roomArea = rs.getFloat("Area");
                 int roomState = rs.getInt("used");
-                res = new ConferenceRoom(roomID,roomNo,roomName,roomFloor,roomSize,roomArea,roomState);
+                String roomDes = rs.getString("Description");
+                String roomphoto = rs.getString("PhotoPath");
+                res = new ConferenceRoom(roomID,roomNo,roomName,roomFloor,roomSize,roomArea,roomState,roomDes,roomphoto);
             }
         }
         catch (SQLException se)
