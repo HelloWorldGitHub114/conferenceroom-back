@@ -22,17 +22,17 @@ public class UserService {
         User res=null;
         if(stat==0)
         {
-            String ID=LoginJDBC.SearchUserID(userLogin.username,userLogin.password);
+            String ID=LoginJDBC.SearchID(userLogin.username,userLogin.password);
             res=new User(ID,userLogin.username,userLogin.password,"user");
         }
         else if(stat==1)
         {
-            String ID=LoginJDBC.SearchAdminID(userLogin.username,userLogin.password);
+            String ID=LoginJDBC.SearchID(userLogin.username,userLogin.password);
             res=new User(ID,userLogin.username,userLogin.password,"admin");
         }
         else if(stat==2) msg.append("用户名不存在！");
         else if(stat==3) msg.append("用户名与密码不匹配！");
-        else msg.append("未知错误！");
+        else msg.append("连接数据库失败！");
         return res;
     }
 

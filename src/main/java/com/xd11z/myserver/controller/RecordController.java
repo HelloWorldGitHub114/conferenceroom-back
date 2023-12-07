@@ -75,10 +75,11 @@ public class RecordController {
 //            e.printStackTrace();
 //            return ServerResponse.fail("查询失败！");
 //        }
+        logger.write(userID);
         return ServerResponse.fail("查询失败！");
     }
 
-    @PutMapping("/changeauditstate")
+    @PutMapping("/changeauditstate")//管理员审核/驳回申请
     public ServerResponse changeAuditState(@RequestBody Map<String, Object> map) throws ParseException {
         if ((Integer) map.get("auditState") == 1) {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -121,10 +122,9 @@ public class RecordController {
         }
     }
 
-    @DeleteMapping("/deleteby/{applyId}")
+    @DeleteMapping("/deleteby/{applyId}")//管理员删除申请
     public ServerResponse deleteByIdAdmin(@PathVariable("applyId") Integer applyId) {
         int rowsAffected = RecordJDBC.deleteRecordById(applyId);
-
         if (rowsAffected > 0) {
             return ServerResponse.success("删除成功");
         } else {
@@ -132,9 +132,31 @@ public class RecordController {
         }
     }
 
+    @DeleteMapping("/delete/{applyId}")//用户删除申请
+    public ServerResponse deleteByIdUser(@PathVariable("applyId") Integer applyId)
+    {
+        logger.write("UserDeleted:"+Integer.toString(applyId));
+        int rowsAffected = RecordJDBC.deleteRecordByUser(applyId);
+        if (rowsAffected > 0)
+        {
+            return ServerResponse.success("删除成功");
+        } else {
+            return ServerResponse.fail("删除失败");
+        }
+    }
 
 
-
+    @PutMapping("/recallapply")//用户撤销申请
+    public ServerResponse changeAuditState(@RequestBody ConRApplyRecord r)
+    {
+        logger.write("UserRecall:"+Integer.toString(r.applyId));
+        int rowsAffected = RecordJDBC.deleteRecordById(r.applyId);
+        if (rowsAffected > 0) {
+            return ServerResponse.success("撤销成功");
+        } else {
+            return ServerResponse.fail("撤销失败");
+        }
+    }
 }
 
 

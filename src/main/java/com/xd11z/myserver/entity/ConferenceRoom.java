@@ -14,8 +14,10 @@ public class ConferenceRoom implements Serializable{
     public int roomSize;
     public float roomArea;
     public int roomState;
+    public String roomDescription;
+    public String roomPhoto;
 
-    public ConferenceRoom(int roomID, String roomNo, String roomName, int roomFloor, int roomSize, float roomArea, int roomState)
+    public ConferenceRoom(int roomID, String roomNo, String roomName, int roomFloor, int roomSize, float roomArea, int roomState, String roomDescription, String roomPhoto)
     {
         this.roomID = roomID;
         this.roomNo = roomNo;
@@ -24,6 +26,8 @@ public class ConferenceRoom implements Serializable{
         this.roomSize = roomSize;
         this.roomArea = roomArea;
         this.roomState = roomState;
+        this.roomDescription= roomDescription;
+        this.roomPhoto = roomPhoto;
     }
 
     public void setUseable()
