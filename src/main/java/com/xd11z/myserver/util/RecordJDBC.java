@@ -189,23 +189,25 @@ import java.time.*;
             }
         }
 
-        public static void updateAuditStatusRejection(Integer applyId, Integer auditState, String rejectReason) {
+        public static int updateAuditStatusRejection(int applyId, int auditStatus, String rejectReason) {
             Connection connection = null;
             PreparedStatement preparedStatement = null;
 
             try {
                 connection = DriverManager.getConnection(JDBCconnection.connectionurl);
 
-                String sql = "UPDATE Reservation SET AuditStatus = ?, RejectReason = ? WHERE ApplyId = ?";
+                // 更新审核状态、审核时间和驳回理由
+                String sql = "UPDATE Reservation SET AuditStatus = ?, AuditTime = GETDATE(), RejectReason = ? WHERE ApplyId = ?";
                 preparedStatement = connection.prepareStatement(sql);
-
-                preparedStatement.setInt(1, auditState);
+                preparedStatement.setInt(1, auditStatus);
                 preparedStatement.setString(2, rejectReason);
                 preparedStatement.setInt(3, applyId);
 
-                preparedStatement.executeUpdate();
+                // 执行更新
+                return preparedStatement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();  // 实际应用中应该有更合适的错误处理
+                return 0;  // 返回 0 表示更新失败
             } finally {
                 // 关闭资源
                 try {
@@ -301,6 +303,137 @@ import java.time.*;
                 }
             }
         }
+
+        public static int updateAuditStatusAndTime(int applyId, int auditStatus) {
+            Connection connection = null;
+            PreparedStatement preparedStatement = null;
+
+            try {
+                connection = DriverManager.getConnection(JDBCconnection.connectionurl);
+
+                // 更新审核状态和审核时间
+                String sql = "UPDATE Reservation SET AuditStatus = ?, AuditTime = GETDATE() WHERE ApplyId = ?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, auditStatus);
+                preparedStatement.setInt(2, applyId);
+
+                // 执行更新
+                return preparedStatement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();  // 实际应用中应该有更合适的错误处理
+                return 0;  // 返回 0 表示更新失败
+            } finally {
+                // 关闭资源
+                try {
+                    if (preparedStatement != null) {
+                        preparedStatement.close();
+                    }
+                    if (connection != null) {
+                        connection.close();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();  // 实际应用中应该有更合适的错误处理
+                }
+            }
+        }
+
+        public static int getTotalnumberbyuser(String userID, int auditState) {
+            Connection connection = null;
+            PreparedStatement preparedStatement = null;
+            ResultSet resultSet = null;
+
+            try {
+                connection = DriverManager.getConnection(JDBCconnection.connectionurl);
+
+                String sql = "SELECT COUNT(*) AS total FROM Reservation WHERE UserID = ? AND AuditStatus = ?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setString(1, userID);
+                preparedStatement.setInt(2, auditState);
+
+                resultSet = preparedStatement.executeQuery();
+
+                if (resultSet.next()) {
+                    return resultSet.getInt("total");
+                }
+
+                return 0;  // 如果没有找到记录，返回0
+            } catch (SQLException e) {
+                e.printStackTrace();  // 应该实现实际的错误处理
+                return -1;  // 发生错误时返回-1
+            } finally {
+                // 关闭资源
+                try {
+                    if (resultSet != null) {
+                        resultSet.close();
+                    }
+                    if (preparedStatement != null) {
+                        preparedStatement.close();
+                    }
+                    if (connection != null) {
+                        connection.close();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();  // 应该实现实际的错误处理
+                }
+            }
+        }
+
+        public static List<ConRApplyRecord> listByConditionsForUsers(String userID, Integer auditState, Integer currentPage) {
+            Connection connection = null;
+            PreparedStatement preparedStatement = null;
+            ResultSet resultSet = null;
+            List<ConRApplyRecord> records = new ArrayList<>();
+
+            try {
+                connection = DriverManager.getConnection(JDBCconnection.connectionurl);
+
+                // 假设存在名为Reservation的表
+                String sql = "SELECT * FROM Reservation " +
+                        "WHERE UserID = ? AND AuditStatus = ? " +
+                        "ORDER BY " +
+                        "CASE " +
+                        "   WHEN AuditStatus = 0 THEN 0 " +  // 未审核
+                        "   WHEN AuditStatus = 1 THEN 1 " +  // 已批准
+                        "   WHEN AuditStatus = 2 THEN 2 " +  // 已驳回
+                        "END, " +
+                        "ApplyTime DESC " +  // 申请时间降序
+                        "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setString(1, userID);
+                preparedStatement.setInt(2, auditState);
+                preparedStatement.setInt(3, (currentPage - 1) * PAGE_SIZE); // OFFSET
+                preparedStatement.setInt(4, PAGE_SIZE); // FETCH NEXT
+
+                resultSet = preparedStatement.executeQuery();
+
+                while (resultSet.next()) {
+                    ConRApplyRecord record = new ConRApplyRecord(resultSet);
+                    records.add(record);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();  // 在真实应用中适当地处理此异常
+            } finally {
+                // 关闭资源（结果集、语句和连接）
+                try {
+                    if (resultSet != null) {
+                        resultSet.close();
+                    }
+                    if (preparedStatement != null) {
+                        preparedStatement.close();
+                    }
+                    if (connection != null) {
+                        connection.close();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();  // 在真实应用中适当地处理此异常
+                }
+            }
+
+            return records;
+        }
+
+
 
     }
 

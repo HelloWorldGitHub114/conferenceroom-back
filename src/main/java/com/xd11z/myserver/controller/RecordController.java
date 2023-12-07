@@ -45,38 +45,38 @@ public class RecordController {
             return ServerResponse.success(num);
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            return ServerResponse.fail("查询失败！");
+            return ServerResponse.fail("查询失败：" + e.getMessage());
         }
     }
 
-    @GetMapping("gettotalbyuser/{userID}/{auditState}")
+    @GetMapping("/gettotalbyuser/{userID}/{auditState}")
     public ServerResponse gettotalbyuser(@PathVariable("userID") String userID,
-                                           @PathVariable("auditState") Integer auditState) {
-//        try {
-//            int num = RecordJDBC.getTotalnumberbyuser(userID, auditState);
-//            return ServerResponse.success(num);
-//        } catch (NumberFormatException e) {
-//            e.printStackTrace();
-//            return ServerResponse.fail("查询失败！");
-//        }
-        return ServerResponse.success(20);
+                                         @PathVariable("auditState") Integer auditState) {
+        try {
+            int num = RecordJDBC.getTotalnumberbyuser(userID, auditState);
+            return ServerResponse.success(num);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ServerResponse.fail("查询失败！");
+        }
     }
 
     @GetMapping("getbyuser/{userID}/{auditState}/{currentPage}")
     public ServerResponse getbyuser(@PathVariable("userID") String userID,
                                     @PathVariable("auditState") Integer auditState,
-                                    @PathVariable("currentPage") Integer currentPage)
-    {
-//        try {
-//            List<ConRApplyRecord> records;
-//            records = RecordJDBC.listByConditions(auditState, currentPage, deleted);
-//            return ServerResponse.success(records);
-//        } catch (NumberFormatException e) {
-//            e.printStackTrace();
-//            return ServerResponse.fail("查询失败！");
-//        }
-        return ServerResponse.fail("查询失败！");
+                                    @PathVariable("currentPage") String currentPageStr) {
+        try {
+            // 将currentPageStr转换为整数
+            Integer currentPage = Integer.parseInt(currentPageStr);
+
+            List<ConRApplyRecord> records = RecordJDBC.listByConditionsForUsers(userID, auditState, currentPage);
+            return ServerResponse.success(records);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return ServerResponse.fail("查询失败！参数错误：currentPage应为整数。");
+        }
     }
+
 
     @PutMapping("/changeauditstate")
     public ServerResponse changeAuditState(@RequestBody Map<String, Object> map) throws ParseException {
@@ -99,7 +99,7 @@ public class RecordController {
             if (list.size() > 0) {
                 return ServerResponse.fail("无法通过,时间已冲突,请驳回请求并说明理由");
             } else {
-                RecordJDBC.updateAuditStatus((Integer) map.get("applyId"), (Integer) map.get("auditState"));
+                RecordJDBC.updateAuditStatusAndTime((Integer) map.get("applyId"), (Integer) map.get("auditState"));
 
                 Map<String, Object> map1 = new HashMap<>();
                 map1.put("theme", map.get("theme"));
@@ -117,9 +117,10 @@ public class RecordController {
                     (Integer) map.get("auditState"),
                     (String) map.get("rejectReason")
             );
-            return ServerResponse.fail("您的申请未被通过，具体请见驳回理由！");
+            return ServerResponse.success("驳回成功");
         }
     }
+
 
     @DeleteMapping("/deleteby/{applyId}")
     public ServerResponse deleteByIdAdmin(@PathVariable("applyId") Integer applyId) {

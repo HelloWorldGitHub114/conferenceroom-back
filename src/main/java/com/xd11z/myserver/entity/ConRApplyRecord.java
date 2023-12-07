@@ -2,7 +2,7 @@ package com.xd11z.myserver.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
-
+import java.sql.*;
 import java.io.Serializable;
 
 public class ConRApplyRecord implements Serializable
@@ -199,5 +199,25 @@ public class ConRApplyRecord implements Serializable
         this.roomNo = roomNo;
         this.roomFloor = roomFloor;
         this.roomName = roomName;
+    }
+
+    public ConRApplyRecord(ResultSet resultSet) throws SQLException {
+        // 从 ResultSet 中逐一获取数据并初始化对象
+        this.applyId = resultSet.getInt("ApplyId");
+        this.auditStatus = resultSet.getInt("AuditStatus");
+        this.applyTime = resultSet.getString("ApplyTime");
+        this.auditTime = resultSet.getString("AuditTime");
+        this.rejectReason = resultSet.getString("RejectReason");
+        this.startTime = resultSet.getString("StartTime");
+        this.endTime = resultSet.getString("EndTime");
+        this.theme = resultSet.getString("Theme");
+        this.personCount = resultSet.getInt("PersonCount");
+        this.digest = resultSet.getString("MeetingDigest");
+        this.UserID = resultSet.getString("UserID");
+        this.roomID = resultSet.getInt("RoomID");
+        this.roomNo = resultSet.getString("RoomNo");
+        this.roomFloor = resultSet.getInt("RoomFloor");
+        this.roomName = resultSet.getString("RoomName");
+        this.deleted = resultSet.getInt("IsDeleted");
     }
 }
