@@ -233,15 +233,13 @@ import java.time.*;
             ResultSet resultSet = null;
             List<Integer> conflictIds = new ArrayList<>();
 
-            System.out.println(roomId);
-            System.out.println(startTime);
-            System.out.println(endTime);
             try {
                 connection = DriverManager.getConnection(JDBCconnection.connectionurl);
 
                 String sql = "SELECT ApplyId FROM Reservation " +
                         "WHERE RoomId = ? AND AuditStatus = 1 AND " +
-                        "((StartTime <= ? AND EndTime >= ?) OR (StartTime <= ? AND EndTime >= ?))";
+                        "((StartTime BETWEEN ? AND ?) OR (EndTime BETWEEN ? AND ?) OR " +
+                        "(? BETWEEN StartTime AND EndTime) OR (? BETWEEN StartTime AND EndTime))";
 
                 preparedStatement = connection.prepareStatement(sql);
 
@@ -250,12 +248,13 @@ import java.time.*;
                 preparedStatement.setTimestamp(3, Timestamp.valueOf(endTime));
                 preparedStatement.setTimestamp(4, Timestamp.valueOf(startTime));
                 preparedStatement.setTimestamp(5, Timestamp.valueOf(endTime));
+                preparedStatement.setTimestamp(6, Timestamp.valueOf(startTime));
+                preparedStatement.setTimestamp(7, Timestamp.valueOf(endTime));
 
                 resultSet = preparedStatement.executeQuery();
 
                 while (resultSet.next()) {
                     conflictIds.add(resultSet.getInt("ApplyId"));
-                    System.out.println("Conflict ApplyId: " + resultSet.getInt("ApplyId"));
                 }
             } catch (SQLException e) {
                 e.printStackTrace();  // 实际应用中应该有更合适的错误处理
@@ -278,11 +277,6 @@ import java.time.*;
 
             return conflictIds;
         }
-
-
-
-
-
 
 
         public static int deleteRecordById(Integer applyId) {
@@ -544,12 +538,11 @@ import java.time.*;
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                 String currentDateTimeStr = currentDateTime.format(formatter);
 
-                // 获取日期部分
-                String selectDate = record.getselectDate();
+                
 
                 // 设置开始时间和结束时间
-                String startTimeStr = selectDate + " " + record.getStartTime();
-                String endTimeStr = selectDate + " " + record.getEndTime();
+                String startTimeStr = record.getStartTime();
+                String endTimeStr = record.getEndTime();
 
                 // 插入申请记录
                 String insertRecordQuery = "INSERT INTO Reservation (ApplyId, AuditStatus, ApplyTime, AuditTime, RejectReason, " +
@@ -573,7 +566,7 @@ import java.time.*;
                 preparedStatement.setInt(14, roomFloor);
                 preparedStatement.setString(15, roomName);
                 preparedStatement.setInt(16, 0); // IsDeleted 置为0
-                preparedStatement.setString(17, record.getselectDate());
+                preparedStatement.setString(17, record.getselectDate());  // 这里使用 selectDate
                 preparedStatement.executeUpdate();
                 return newApplyId;
             } catch (SQLException e) {

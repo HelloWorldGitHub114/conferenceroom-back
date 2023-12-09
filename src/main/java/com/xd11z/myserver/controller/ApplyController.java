@@ -35,7 +35,7 @@ public class ApplyController {
     }
 
     //有问题，不管什么时间段都会冲突
-    /*@GetMapping("/searchtimeconflict/{roomId}/{startTime}/{endTime}")
+    @GetMapping("/searchtimeconflict/{roomId}/{startTime}/{endTime}")
     public ServerResponse searchtimeconflict(
             @PathVariable("roomId") Integer roomId,
             @PathVariable("startTime") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime startTime,
@@ -56,16 +56,16 @@ public class ApplyController {
             List<Integer> listApplyId = RecordJDBC.searchTimeConflict(roomId, startTime, endTime);
 
             if (listApplyId.size() > 0) {
-                return ServerResponse.fail("与别的申请有冲突，请换一个时间段或者会议室进行申请！");
+                return ServerResponse.success("0");
             } else {
-                return ServerResponse.success("申请成功！");
+                return ServerResponse.success("1");
             }
         } catch (DateTimeParseException e) {
             // 处理日期时间解析异常
             e.printStackTrace();
             return ServerResponse.fail("日期时间格式错误");
         }
-    }*/
+    }
 
 
 

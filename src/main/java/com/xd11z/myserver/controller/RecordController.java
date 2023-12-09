@@ -78,39 +78,37 @@ public class RecordController {
     }
 
 
-    //有问题，就算有冲突也还是能通过
+
+
     @PutMapping("/changeauditstate")
     public ServerResponse changeAuditState(@RequestBody Map<String, Object> map) throws ParseException {
         if ((Integer) map.get("auditState") == 1) {
-            // 去掉毫秒
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date = simpleDateFormat.parse((String) map.get("startTime"));
+            if (System.currentTimeMillis() > date.getTime()) {
+                return ServerResponse.fail("无法通过,开始时间已过,请驳回");
+            }
+
+            // 去掉毫秒部分
             String startTimeString = ((String) map.get("startTime")).split("\\.")[0];
             String endTimeString = ((String) map.get("endTime")).split("\\.")[0];
 
-
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneOffset.UTC);
             LocalDateTime startTime = LocalDateTime.parse(startTimeString, formatter);
             LocalDateTime endTime = LocalDateTime.parse(endTimeString, formatter);
 
-
-
-            // 检查时间冲突
             List<Integer> list = RecordJDBC.searchTimeConflict((Integer) map.get("roomID"), startTime, endTime);
             if (list.size() > 0) {
                 return ServerResponse.fail("无法通过,时间已冲突,请驳回请求并说明理由");
             } else {
-                // 更新审批状态和时间
                 RecordJDBC.updateAuditStatusAndTime((Integer) map.get("applyId"), (Integer) map.get("auditState"));
 
-                // 构建响应数据
                 Map<String, Object> map1 = new HashMap<>();
                 map1.put("theme", map.get("theme"));
                 map1.put("roomFloor", map.get("roomFloor"));
                 map1.put("roomNo", map.get("roomNo"));
                 map1.put("startTime", startTime.format(formatter)); // 格式化为字符串
                 map1.put("endTime", endTime.format(formatter)); // 格式化为字符串
-
-                // 输出结果
-                System.out.println(map1);
 
                 return ServerResponse.success("");
             }
@@ -126,13 +124,9 @@ public class RecordController {
     }
 
 
-
-
-
     @DeleteMapping("/deleteby/{applyId}")//管理员删除申请
     public ServerResponse deleteByIdAdmin(@PathVariable("applyId") Integer applyId) {
         int rowsAffected = RecordJDBC.deleteRecordById(applyId);
-
         if (rowsAffected > 0) {
             return ServerResponse.success("删除成功");
         } else {
@@ -154,6 +148,7 @@ public class RecordController {
     }
 
 
+
     @PutMapping("/recallapply")//用户撤销申请
     public ServerResponse changeAuditState(@RequestBody ConRApplyRecord r)
     {
@@ -165,6 +160,7 @@ public class RecordController {
             return ServerResponse.fail("撤销失败");
         }
     }
+
 }
 
 
