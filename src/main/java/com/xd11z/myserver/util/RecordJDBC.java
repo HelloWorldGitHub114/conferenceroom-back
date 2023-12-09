@@ -8,7 +8,7 @@ import java.util.*;
 import java.time.*;
     public class RecordJDBC {
 
-        public static Integer PAGE_SIZE=7;
+        public static Integer PAGE_SIZE=6;
 
         public static List<ConRApplyRecord> listAllRecordsByAuditStatus(int auditStatus, Integer currentPage) {
             Connection connection = null;
@@ -238,15 +238,18 @@ import java.time.*;
 
                 String sql = "SELECT ApplyId FROM Reservation " +
                         "WHERE RoomId = ? AND AuditStatus = 1 AND " +
-                        "((StartTime <= ? AND EndTime >= ?) OR (StartTime <= ? AND EndTime >= ?))";
+                        "((StartTime <= ? AND ? < EndTime) OR (StartTime < ? AND ? <= EndTime) OR (? <= StartTime AND EndTime <= ?))";
+                //注意这里的等号！有的端点重合是不影响的，有的影响！
 
                 preparedStatement = connection.prepareStatement(sql);
 
                 preparedStatement.setInt(1, roomId);
                 preparedStatement.setTimestamp(2, Timestamp.valueOf(startTime));
-                preparedStatement.setTimestamp(3, Timestamp.valueOf(endTime));
-                preparedStatement.setTimestamp(4, Timestamp.valueOf(startTime));
+                preparedStatement.setTimestamp(3, Timestamp.valueOf(startTime));
+                preparedStatement.setTimestamp(4, Timestamp.valueOf(endTime));
                 preparedStatement.setTimestamp(5, Timestamp.valueOf(endTime));
+                preparedStatement.setTimestamp(6, Timestamp.valueOf(startTime));
+                preparedStatement.setTimestamp(7, Timestamp.valueOf(endTime));
 
                 resultSet = preparedStatement.executeQuery();
 
