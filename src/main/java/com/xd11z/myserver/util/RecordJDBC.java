@@ -233,9 +233,6 @@ import java.time.*;
             ResultSet resultSet = null;
             List<Integer> conflictIds = new ArrayList<>();
 
-            System.out.println(roomId);
-            System.out.println(startTime);
-            System.out.println(endTime);
             try {
                 connection = DriverManager.getConnection(JDBCconnection.connectionurl);
 
@@ -255,7 +252,6 @@ import java.time.*;
 
                 while (resultSet.next()) {
                     conflictIds.add(resultSet.getInt("ApplyId"));
-                    System.out.println("Conflict ApplyId: " + resultSet.getInt("ApplyId"));
                 }
             } catch (SQLException e) {
                 e.printStackTrace();  // 实际应用中应该有更合适的错误处理
@@ -278,12 +274,6 @@ import java.time.*;
 
             return conflictIds;
         }
-
-
-
-
-
-
 
         public static int deleteRecordById(Integer applyId) {
             Connection connection = null;
