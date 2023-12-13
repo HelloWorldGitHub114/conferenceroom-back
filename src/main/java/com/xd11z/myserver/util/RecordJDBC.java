@@ -35,12 +35,12 @@ import java.time.*;
                     // 设置 record 的属性值，根据数据库表的字段名调整
                     record.setApplyId(resultSet.getInt("ApplyId"));
                     record.setAuditStatus(resultSet.getInt("AuditStatus"));
-                    record.setApplyTime(resultSet.getString("ApplyTime"));
+                    record.setEndTime(StringUtil.removeLastNChars(resultSet.getString("ApplyTime"),2));
                     // 设置其他属性的值，类似...
                     record.setAuditTime(resultSet.getString("AuditTime"));
                     record.setRejectReason(resultSet.getString("RejectReason"));
-                    record.setStartTime(resultSet.getString("StartTime"));
-                    record.setEndTime(resultSet.getString("EndTime"));
+                    record.setStartTime(StringUtil.removeLastNChars(resultSet.getString("StartTime"),2));
+                    record.setEndTime(StringUtil.removeLastNChars(resultSet.getString("EndTime"),2));
                     record.setTheme(resultSet.getString("Theme"));
                     record.setPersonCount(resultSet.getInt("PersonCount"));
                     record.setDigest(resultSet.getString("MeetingDigest"));
@@ -93,11 +93,11 @@ import java.time.*;
                     ConRApplyRecord record = new ConRApplyRecord();
                     record.setApplyId(resultSet.getInt("ApplyId"));
                     record.setAuditStatus(resultSet.getInt("AuditStatus"));
-                    record.setApplyTime(resultSet.getString("ApplyTime"));
+                    record.setEndTime(StringUtil.removeLastNChars(resultSet.getString("ApplyTime"),2));
                     record.setAuditTime(resultSet.getString("AuditTime"));
                     record.setRejectReason(resultSet.getString("RejectReason"));
-                    record.setStartTime(resultSet.getString("StartTime"));
-                    record.setEndTime(resultSet.getString("EndTime"));
+                    record.setStartTime(StringUtil.removeLastNChars(resultSet.getString("StartTime"),2));
+                    record.setEndTime(StringUtil.removeLastNChars(resultSet.getString("EndTime"),2));
                     record.setTheme(resultSet.getString("Theme"));
                     record.setPersonCount(resultSet.getInt("PersonCount"));
                     record.setDigest(resultSet.getString("MeetingDigest"));
@@ -414,6 +414,9 @@ import java.time.*;
 
                 while (resultSet.next()) {
                     ConRApplyRecord record = new ConRApplyRecord(resultSet);
+                    record.setEndTime(StringUtil.removeLastNChars(resultSet.getString("ApplyTime"),2));
+                    record.setStartTime(StringUtil.removeLastNChars(resultSet.getString("StartTime"),2));
+                    record.setEndTime(StringUtil.removeLastNChars(resultSet.getString("EndTime"),2));
                     records.add(record);
                 }
             } catch (SQLException e) {
@@ -543,6 +546,9 @@ import java.time.*;
                 // 设置开始时间和结束时间
                 String startTimeStr = selectDate + " " + record.getStartTime();
                 String endTimeStr = selectDate + " " + record.getEndTime();
+
+                logger.write(startTimeStr);
+                logger.write(endTimeStr);
 
                 // 插入申请记录
                 String insertRecordQuery = "INSERT INTO Reservation (ApplyId, AuditStatus, ApplyTime, AuditTime, RejectReason, " +

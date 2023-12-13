@@ -1,19 +1,21 @@
 package com.xd11z.myserver.interceptor;
 
-import com.auth0.jwt.exceptions.*;
+import com.auth0.jwt.exceptions.AlgorithmMismatchException;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.xd11z.myserver.annotation.PassToken;
-import com.xd11z.myserver.annotation.UserLoginToken;
+import com.xd11z.myserver.annotation.UserToken;
 import com.xd11z.myserver.util.TokenTool;
-import com.xd11z.myserver.util.logger;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.lang.Nullable;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 
 /**
@@ -50,22 +52,30 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             }
         }
         //检查有没有需要用户权限的注解
-        if (method.isAnnotationPresent(UserLoginToken.class)) {
-            UserLoginToken userLoginToken = method.getAnnotation(UserLoginToken.class);
-            if (userLoginToken.required()) {
+        if (method.isAnnotationPresent(UserToken.class)) {
+            UserToken userToken = method.getAnnotation(UserToken.class);
+            //如果启用Token验证
+            if (userToken.required()) {
                 // 执行认证
                 if (token == null) {
                     throw new RuntimeException("无token，请重新登录");
                 }
                 // 验证 token
                 try {
-                    TokenTool.verify(token);
+                    DecodedJWT decodedJWT = TokenTool.verify(token);
+                    if (!userToken.role().equals("all")) {
+                        if (!Objects.equals(userToken.role(), decodedJWT.getClaim("userRole").asString())) {
+                            throw new SecurityException("token没有权限！");
+                        }
+                    }
                 } catch (SignatureVerificationException e) {
-                    throw new RuntimeException("无效签名！");
+                    throw new RuntimeException("token签名无效！");
                 }catch (TokenExpiredException e){
                     throw new RuntimeException("token过期");
                 }catch (AlgorithmMismatchException e){
-                    throw new RuntimeException("算法不一致");
+                    throw new RuntimeException("token算法不一致");
+                }catch (SecurityException e){
+                    throw e;
                 }catch (Exception e){
                     throw new RuntimeException("token无效！");
                 }

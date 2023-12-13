@@ -32,7 +32,6 @@ public class ApplyController {
         }
     }
 
-    //有问题，不管什么时间段都会冲突
     @GetMapping("/searchtimeconflict/{roomId}/{startTime}/{endTime}")
     public ServerResponse searchtimeconflict(
             @PathVariable("roomId") Integer roomId,

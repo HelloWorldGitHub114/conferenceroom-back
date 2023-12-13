@@ -1,19 +1,21 @@
 package com.xd11z.myserver.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.xd11z.myserver.annotation.UserLoginToken;
-import com.xd11z.myserver.entity.*;
-import com.xd11z.myserver.util.*;
+import com.xd11z.myserver.annotation.UserToken;
+import com.xd11z.myserver.entity.ConRApplyRecord;
+import com.xd11z.myserver.entity.ServerResponse;
+import com.xd11z.myserver.util.RecordJDBC;
+import com.xd11z.myserver.util.logger;
 import org.springframework.web.bind.annotation.*;
-import java.time.ZoneOffset;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.*;
-import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/record")
@@ -124,6 +126,7 @@ public class RecordController {
     }
 
 
+    @UserToken()
     @DeleteMapping("/deleteby/{applyId}")//管理员删除申请
     public ServerResponse deleteByIdAdmin(@PathVariable("applyId") Integer applyId) {
         int rowsAffected = RecordJDBC.deleteRecordById(applyId);

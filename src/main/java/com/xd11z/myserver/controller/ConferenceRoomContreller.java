@@ -1,7 +1,6 @@
 package com.xd11z.myserver.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.xd11z.myserver.annotation.UserLoginToken;
+import com.xd11z.myserver.annotation.UserToken;
 import com.xd11z.myserver.entity.*;
 import com.xd11z.myserver.util.*;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +14,7 @@ import java.util.*;
 @RequestMapping("/conference-room")
 public class ConferenceRoomContreller 
 {
-    @UserLoginToken
+    @UserToken
     @GetMapping("/listall")//展示所有会议室
     //返回值为ConferenceRoom的列表
     public ServerResponse getAllConferenceRooms()
@@ -24,7 +23,7 @@ public class ConferenceRoomContreller
         return ServerResponse.success(conferenceRooms);
     }
 
-    @UserLoginToken
+    @UserToken
     @GetMapping("listallonstate")//展示所有会议室（可用）
     public  ServerResponse Getallonstate()
     {
@@ -32,7 +31,7 @@ public class ConferenceRoomContreller
         return ServerResponse.success(conferenceRooms);
     }
 
-    @UserLoginToken
+    @UserToken
     @GetMapping("getconditionsonstate")//展示申请会议室页面的下拉搜索框（只返回可用的）
     public ServerResponse GetConditionsOnstate()
     {
@@ -41,7 +40,7 @@ public class ConferenceRoomContreller
         return ServerResponse.success(new Conditions(floors,sizes));
     }
 
-    @UserLoginToken
+    @UserToken
     @GetMapping("/getconditions")//展示会议室管理页面的下拉搜索框
     //返回值为两个列表 分别为所有可能的序号、容纳人数数据
     public ServerResponse getconditions()
@@ -51,16 +50,16 @@ public class ConferenceRoomContreller
         return ServerResponse.success(new Conditions(floors,sizes));
     }
 
-    @UserLoginToken
+    @UserToken(role ="admin")
     @PutMapping(value = "/changestate")//管理员修改会议室的可用状态
     public ServerResponse changeState(@RequestBody ConferenceRoom conferenceRoom)
     {
         boolean flg=ConferenceRoomJDBC.ChangeState(conferenceRoom);
-        if(flg) return ServerResponse.success("修改成功");
+        if(flg) return ServerResponse.success("1");
         else return ServerResponse.fail("修改失败");
     }
 
-    @UserLoginToken
+    @UserToken(role ="admin")
     @PostMapping("/add")//添加和更新会议室信息
     public ServerResponse Add(@RequestBody ConferenceRoom conferenceRoom)
     {
