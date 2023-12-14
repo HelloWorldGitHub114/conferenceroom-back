@@ -37,7 +37,7 @@ import java.time.*;
                     record.setAuditStatus(resultSet.getInt("AuditStatus"));
                     record.setEndTime(StringUtil.removeLastNChars(resultSet.getString("ApplyTime"),2));
                     // 设置其他属性的值，类似...
-                    record.setAuditTime(resultSet.getString("AuditTime"));
+                    record.setAuditTime(StringUtil.removeLastNChars(resultSet.getString("AuditTime"),2));
                     record.setRejectReason(resultSet.getString("RejectReason"));
                     record.setStartTime(StringUtil.removeLastNChars(resultSet.getString("StartTime"),2));
                     record.setEndTime(StringUtil.removeLastNChars(resultSet.getString("EndTime"),2));
@@ -94,7 +94,7 @@ import java.time.*;
                     record.setApplyId(resultSet.getInt("ApplyId"));
                     record.setAuditStatus(resultSet.getInt("AuditStatus"));
                     record.setEndTime(StringUtil.removeLastNChars(resultSet.getString("ApplyTime"),2));
-                    record.setAuditTime(resultSet.getString("AuditTime"));
+                    record.setAuditTime(StringUtil.removeLastNChars(resultSet.getString("AuditTime"),2));
                     record.setRejectReason(resultSet.getString("RejectReason"));
                     record.setStartTime(StringUtil.removeLastNChars(resultSet.getString("StartTime"),2));
                     record.setEndTime(StringUtil.removeLastNChars(resultSet.getString("EndTime"),2));
@@ -546,9 +546,6 @@ import java.time.*;
                 // 设置开始时间和结束时间
                 String startTimeStr = selectDate + " " + record.getStartTime();
                 String endTimeStr = selectDate + " " + record.getEndTime();
-
-                logger.write(startTimeStr);
-                logger.write(endTimeStr);
 
                 // 插入申请记录
                 String insertRecordQuery = "INSERT INTO Reservation (ApplyId, AuditStatus, ApplyTime, AuditTime, RejectReason, " +

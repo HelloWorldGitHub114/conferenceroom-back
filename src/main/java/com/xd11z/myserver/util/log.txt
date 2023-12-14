@@ -75,3 +75,107 @@
 2023-12-13 21:20:02   {"UserID":"02","digest":"123456","endTime":"17:00","personCount":10,"roomID":1,"selectDate":"2023-12-16","startTime":"08:00","theme":"123456","userID":"02"}
 2023-12-13 21:20:02   2023-12-16 08:00
 2023-12-13 21:20:02   2023-12-16 17:00
+2023-12-14 13:32:12   success upload
+2023-12-14 13:32:12   false
+2023-12-14 13:32:12   E:\Tools\IntelliJ IDEA 2023.2.1\projects\conferenceroom-back\src\main\resources\static\20231214133212629edb7271d849469de0e67baeabd625.jpg
+2023-12-14 15:07:32   success upload
+2023-12-14 15:07:32   false
+2023-12-14 15:07:32   E:\Tools\IntelliJ IDEA 2023.2.1\projects\conferenceroom-back\src\main\resources\static\20231214150732ec7adf99e8794e458bfb2b404aff7187.jpg
+2023-12-14 20:03:13   success
+2023-12-14 20:03:13   com.xd11z.myserver.entity.ConferenceRoomForm@7fe0e8c
+2023-12-14 20:04:23   success
+2023-12-14 20:04:23   {"roomArea":0.0,"roomFloor":0,"roomID":0,"roomSize":0,"roomState":0}
+2023-12-14 20:05:33   success
+2023-12-14 20:05:33   photo
+2023-12-14 20:05:33   {"roomArea":0.0,"roomFloor":0,"roomID":0,"roomSize":0,"roomState":0}
+2023-12-14 20:06:45   success
+2023-12-14 20:06:45   photo
+2023-12-14 20:07:16   success
+2023-12-14 20:07:16   photo
+2023-12-14 20:07:17   20231214200717526e3ca4427a4877a2e4ecf9b26e5db9.jpg
+2023-12-14 20:18:50   success
+2023-12-14 20:18:50   photo
+2023-12-14 20:18:50   null
+2023-12-14 20:18:50   202312142018509234fa252ee24651b49d8a15a6737e83.jpg
+2023-12-14 20:20:19   success
+2023-12-14 20:20:19   photo
+2023-12-14 20:20:19   null
+2023-12-14 20:20:19   20231214202019575413ac43724b338d16467834b98ef1.jpg
+2023-12-14 20:26:52   success
+2023-12-14 20:26:52   photo
+2023-12-14 20:26:52   null
+2023-12-14 20:26:53   20231214202653bcbab005037d4a0f80402a9861368541.jpg
+2023-12-14 20:38:04   success
+2023-12-14 20:38:04   photo
+2023-12-14 20:38:04   null
+2023-12-14 20:38:04   20231214203804bb4d52d0653f4cc180906ffafabcb499.png
+2023-12-14 20:39:02   success{"roomID":"","roomNo":"12345","roomName":"12345","roomFloor":12345,"roomSize":12345,"roomArea":12345,"roomState":"","roomPhoto":"","roomDescription":""}
+2023-12-14 20:39:02   photo
+2023-12-14 20:39:02   {"roomArea":12345.0,"roomDescription":"","roomFloor":12345,"roomID":0,"roomName":"12345","roomNo":"12345","roomSize":12345,"roomState":0}
+2023-12-14 20:39:02   202312142039025f7f571fcfb444bc866c15478b2441a0.png
+2023-12-14 22:33:20   success{"roomID":4,"roomNo":"A101","roomName":"会议室1","roomFloor":1,"roomSize":50,"roomArea":120,"roomState":1,"roomDescription":"描述1","roomPhoto":"https://album.biliimg.com/bfs/new_dyn/92d60a4eb8c8353db2add5aaec90682b1759458702.jpg"}
+2023-12-14 22:33:20   {"roomArea":120.0,"roomDescription":"描述1","roomFloor":1,"roomID":4,"roomName":"会议室1","roomNo":"A101","roomPhoto":"https://album.biliimg.com/bfs/new_dyn/92d60a4eb8c8353db2add5aaec90682b1759458702.jpg","roomSize":50,"roomState":1}
+2023-12-14 22:38:53   success{"roomID":3,"roomNo":"301","roomName":"Boardroom C","roomFloor":3,"roomSize":20,"roomArea":50.75,"roomState":0,"roomDescription":"Executive boardroom","roomPhoto":"https://album.biliimg.com/bfs/new_dyn/92d60a4eb8c8353db2add5aaec90682b1759458702.jpg"}
+2023-12-14 22:38:53   {"roomArea":50.75,"roomDescription":"Executive boardroom","roomFloor":3,"roomID":3,"roomName":"Boardroom C","roomNo":"301","roomPhoto":"https://album.biliimg.com/bfs/new_dyn/92d60a4eb8c8353db2add5aaec90682b1759458702.jpg","roomSize":20,"roomState":0}
+2023-12-14 22:38:53   202312142238530b06d4d79e464069ac30806f32b752e3.png
+2023-12-14 22:40:23   success{"roomID":3,"roomNo":"301","roomName":"Boardroom C","roomFloor":3,"roomSize":20,"roomArea":50,"roomState":0,"roomDescription":"Executive boardroom","roomPhoto":"http://localhost:8080/photo/202312142238530b06d4d79e464069ac30806f32b752e3.png"}
+2023-12-14 22:40:23   {"roomArea":50.0,"roomDescription":"Executive boardroom","roomFloor":3,"roomID":3,"roomName":"Boardroom C","roomNo":"301","roomPhoto":"http://localhost:8080/photo/202312142238530b06d4d79e464069ac30806f32b752e3.png","roomSize":20,"roomState":0}
+2023-12-14 22:40:27   success{"roomID":3,"roomNo":"301","roomName":"Boardroom C","roomFloor":3,"roomSize":20,"roomArea":50,"roomState":0,"roomDescription":"Executive boardroom","roomPhoto":"http://localhost:8080/photo/202312142238530b06d4d79e464069ac30806f32b752e3.png"}
+2023-12-14 22:40:27   {"roomArea":50.0,"roomDescription":"Executive boardroom","roomFloor":3,"roomID":3,"roomName":"Boardroom C","roomNo":"301","roomPhoto":"http://localhost:8080/photo/202312142238530b06d4d79e464069ac30806f32b752e3.png","roomSize":20,"roomState":0}
+2023-12-14 22:43:49   success{"roomID":3,"roomNo":"301","roomName":"Boardroom C","roomFloor":3,"roomSize":20,"roomArea":50,"roomState":0,"roomDescription":"Executive boardroom","roomPhoto":"http://localhost:8080/photo/202312142238530b06d4d79e464069ac30806f32b752e3.png"}
+2023-12-14 22:43:49   {"roomArea":50.0,"roomDescription":"Executive boardroom","roomFloor":3,"roomID":3,"roomName":"Boardroom C","roomNo":"301","roomPhoto":"http://localhost:8080/photo/202312142238530b06d4d79e464069ac30806f32b752e3.png","roomSize":20,"roomState":0}
+2023-12-14 22:44:02   success{"roomID":3,"roomNo":"301","roomName":"Boardroom C","roomFloor":3,"roomSize":20,"roomArea":50,"roomState":0,"roomDescription":"Executive boardroom","roomPhoto":"http://localhost:8080/photo/202312142238530b06d4d79e464069ac30806f32b752e3.png"}
+2023-12-14 22:44:02   {"roomArea":50.0,"roomDescription":"Executive boardroom","roomFloor":3,"roomID":3,"roomName":"Boardroom C","roomNo":"301","roomPhoto":"http://localhost:8080/photo/202312142238530b06d4d79e464069ac30806f32b752e3.png","roomSize":20,"roomState":0}
+2023-12-14 22:47:53   success{"roomID":8,"roomNo":"E501","roomName":"会议室5","roomFloor":5,"roomSize":60,"roomArea":110,"roomState":1,"roomDescription":"描述5","roomPhoto":"https://album.biliimg.com/bfs/new_dyn/92d60a4eb8c8353db2add5aaec90682b1759458702.jpg"}
+2023-12-14 22:47:53   {"roomArea":110.0,"roomDescription":"描述5","roomFloor":5,"roomID":8,"roomName":"会议室5","roomNo":"E501","roomPhoto":"https://album.biliimg.com/bfs/new_dyn/92d60a4eb8c8353db2add5aaec90682b1759458702.jpg","roomSize":60,"roomState":1}
+2023-12-14 22:47:53   CheckPhotonullfalse
+2023-12-14 22:49:54   success{"roomID":8,"roomNo":"E501","roomName":"会议室5","roomFloor":5,"roomSize":60,"roomArea":110,"roomState":1,"roomDescription":"描述5","roomPhoto":"http://localhost:8080/photo/20231214224753f2a400bd33f24b64b698e3eda11d2817.png"}
+2023-12-14 22:49:54   {"roomArea":110.0,"roomDescription":"描述5","roomFloor":5,"roomID":8,"roomName":"会议室5","roomNo":"E501","roomPhoto":"http://localhost:8080/photo/20231214224753f2a400bd33f24b64b698e3eda11d2817.png","roomSize":60,"roomState":1}
+2023-12-14 22:49:54   CheckPhotonullfalse
+2023-12-14 22:52:26   success{"roomID":8,"roomNo":"E501","roomName":"会议室5","roomFloor":5,"roomSize":60,"roomArea":110,"roomState":1,"roomDescription":"描述5","roomPhoto":"http://localhost:8080/photo/202312142249541bc68ddad7fd4458abf91916e3703571.png"}
+2023-12-14 22:52:26   {"roomArea":110.0,"roomDescription":"描述5","roomFloor":5,"roomID":8,"roomName":"会议室5","roomNo":"E501","roomPhoto":"http://localhost:8080/photo/202312142249541bc68ddad7fd4458abf91916e3703571.png","roomSize":60,"roomState":1}
+2023-12-14 22:52:27   ??????
+2023-12-14 22:52:27   CheckPhotonullfalse
+2023-12-14 22:53:33   success{"roomID":8,"roomNo":"E501","roomName":"会议室5","roomFloor":5,"roomSize":60,"roomArea":110,"roomState":1,"roomDescription":"描述5","roomPhoto":"http://localhost:8080/photo/20231214225227a192459283fb48228339115abcb1863a.png"}
+2023-12-14 22:53:33   {"roomArea":110.0,"roomDescription":"描述5","roomFloor":5,"roomID":8,"roomName":"会议室5","roomNo":"E501","roomPhoto":"http://localhost:8080/photo/20231214225227a192459283fb48228339115abcb1863a.png","roomSize":60,"roomState":1}
+2023-12-14 22:53:33   ??????
+2023-12-14 22:53:33   CheckPhotonullfalse
+2023-12-14 22:53:33   !!!!!
+2023-12-14 23:00:15   success{"roomID":8,"roomNo":"E501","roomName":"会议室5","roomFloor":5,"roomSize":60,"roomArea":110,"roomState":1,"roomDescription":"描述5","roomPhoto":"http://localhost:8080/photo/20231214225333ef7b86d4bf8e47cfa9213d7672ac072b.png"}
+2023-12-14 23:00:15   {"roomArea":110.0,"roomDescription":"描述5","roomFloor":5,"roomID":8,"roomName":"会议室5","roomNo":"E501","roomPhoto":"http://localhost:8080/photo/20231214225333ef7b86d4bf8e47cfa9213d7672ac072b.png","roomSize":60,"roomState":1}
+2023-12-14 23:00:16   ??????
+2023-12-14 23:00:16   CheckPhotonullfalse
+2023-12-14 23:00:16   !!!!!
+2023-12-14 23:03:13   success{"roomID":8,"roomNo":"E501","roomName":"会议室5","roomFloor":5,"roomSize":60,"roomArea":110,"roomState":1,"roomDescription":"描述5","roomPhoto":"http://localhost:8080/photo/20231214230016e9f2a00fab6d43dfb2f098e3156e82d2.png"}
+2023-12-14 23:03:14   {"roomArea":110.0,"roomDescription":"描述5","roomFloor":5,"roomID":8,"roomName":"会议室5","roomNo":"E501","roomPhoto":"http://localhost:8080/photo/20231214230016e9f2a00fab6d43dfb2f098e3156e82d2.png","roomSize":60,"roomState":1}
+2023-12-14 23:03:14   ??????
+2023-12-14 23:03:14   CheckPhotonullfalse
+2023-12-14 23:03:14   !!!!!
+2023-12-14 23:03:14   name:2023121423031458187c1c2c40458b80ae744ffe86d641.png
+2023-12-14 23:03:14   成功更换图片
+2023-12-14 23:04:40   success{"roomID":8,"roomNo":"E501","roomName":"会议室5","roomFloor":5,"roomSize":60,"roomArea":110,"roomState":1,"roomDescription":"描述5","roomPhoto":"http://localhost:8080/photo/2023121423031458187c1c2c40458b80ae744ffe86d641.png"}
+2023-12-14 23:04:40   {"roomArea":110.0,"roomDescription":"描述5","roomFloor":5,"roomID":8,"roomName":"会议室5","roomNo":"E501","roomPhoto":"http://localhost:8080/photo/2023121423031458187c1c2c40458b80ae744ffe86d641.png","roomSize":60,"roomState":1}
+2023-12-14 23:04:41   ??????
+2023-12-14 23:04:41   CheckPhotonullfalse
+2023-12-14 23:04:41   !!!!!
+2023-12-14 23:04:41   name:20231214230441a14fcbb411644d22b706f031cf935b64.png
+2023-12-14 23:04:41   成功更换图片
+2023-12-14 23:05:57   success{"roomID":8,"roomNo":"E501","roomName":"会议室5","roomFloor":5,"roomSize":60,"roomArea":110,"roomState":1,"roomDescription":"描述5","roomPhoto":"http://localhost:8080/photo/20231214230441a14fcbb411644d22b706f031cf935b64.png"}
+2023-12-14 23:05:57   {"roomArea":110.0,"roomDescription":"描述5","roomFloor":5,"roomID":8,"roomName":"会议室5","roomNo":"E501","roomPhoto":"http://localhost:8080/photo/20231214230441a14fcbb411644d22b706f031cf935b64.png","roomSize":60,"roomState":1}
+2023-12-14 23:05:57   ??????
+2023-12-14 23:05:57   CheckPhotonullfalse
+2023-12-14 23:05:57   !!!!!
+2023-12-14 23:05:57   name:20231214230557da247ba118754542a78ada668c8e3eb1.png
+2023-12-14 23:05:57   成功更换图片
+2023-12-14 23:09:25   success{"roomID":8,"roomNo":"E501","roomName":"会议室5","roomFloor":5,"roomSize":60,"roomArea":110,"roomState":1,"roomDescription":"描述5","roomPhoto":"http://localhost:8080/photo/20231214230557da247ba118754542a78ada668c8e3eb1.png"}
+2023-12-14 23:09:25   {"roomArea":110.0,"roomDescription":"描述5","roomFloor":5,"roomID":8,"roomName":"会议室5","roomNo":"E501","roomPhoto":"http://localhost:8080/photo/20231214230557da247ba118754542a78ada668c8e3eb1.png","roomSize":60,"roomState":1}
+2023-12-14 23:09:26   CheckPhotonullfalse
+2023-12-14 23:09:26   更换图片失败:http://localhost:8080/photo/20231214230557da247ba118754542a78ada668c8e3eb1.png
+2023-12-14 23:27:55   success{"roomID":8,"roomNo":"E501","roomName":"会议室5","roomFloor":5,"roomSize":60,"roomArea":110,"roomState":1,"roomDescription":"描述5","roomPhoto":"http://localhost:8080/photo/2023121423092699af3ea2129c4bccb93ff97c1ce6d281.png"}
+2023-12-14 23:27:55   {"roomArea":110.0,"roomDescription":"描述5","roomFloor":5,"roomID":8,"roomName":"会议室5","roomNo":"E501","roomPhoto":"http://localhost:8080/photo/2023121423092699af3ea2129c4bccb93ff97c1ce6d281.png","roomSize":60,"roomState":1}
+2023-12-14 23:27:55   CheckPhotonullfalse
+2023-12-14 23:27:55   成功删除图片:http://localhost:8080/photo/2023121423092699af3ea2129c4bccb93ff97c1ce6d281.png
+2023-12-14 23:28:40   success{"roomID":3,"roomNo":"301","roomName":"Boardroom C","roomFloor":3,"roomSize":20,"roomArea":50,"roomState":0,"roomDescription":"Executive boardroom","roomPhoto":"http://localhost:8080/photo/202312142238530b06d4d79e464069ac30806f32b752e3.png"}
+2023-12-14 23:28:40   {"roomArea":50.0,"roomDescription":"Executive boardroom","roomFloor":3,"roomID":3,"roomName":"Boardroom C","roomNo":"301","roomPhoto":"http://localhost:8080/photo/202312142238530b06d4d79e464069ac30806f32b752e3.png","roomSize":20,"roomState":0}
+2023-12-14 23:28:40   CheckPhotonullfalse
+2023-12-14 23:28:40   删除图片失败:http://localhost:8080/photo/202312142238530b06d4d79e464069ac30806f32b752e3.png

@@ -7,6 +7,7 @@ import java.io.Serializable;
  * 房号、名字、楼层、房间类型（大、小会议室）、人数、面积、状态（是否可用）
  */
 public class ConferenceRoom implements Serializable{
+
     public int roomID;
     public String roomNo;
     public String roomName;

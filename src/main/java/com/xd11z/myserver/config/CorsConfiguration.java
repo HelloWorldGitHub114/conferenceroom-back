@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
@@ -43,5 +44,14 @@ public class CorsConfiguration implements WebMvcConfigurer {
     @Bean
     public AuthenticationInterceptor authenticationInterceptor() {
         return new AuthenticationInterceptor();
+    }
+
+    /**
+     * 路径映射，把http的请求映射到本地图片
+     * @param registry
+     */
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/photo/**").addResourceLocations("file:" + GlobalVariables.photoPath);
     }
 }
