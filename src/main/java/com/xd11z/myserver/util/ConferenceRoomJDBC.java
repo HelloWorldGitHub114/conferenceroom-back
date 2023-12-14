@@ -480,6 +480,8 @@ public class ConferenceRoomJDBC
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
+        //缓存图片链接
+        String photo = SearchByID(id).roomPhoto;
         try {
             conn = DriverManager.getConnection(JDBCconnection.connectionurl);
             stmt = conn.prepareStatement(QUERY_ROOM);
@@ -489,6 +491,10 @@ public class ConferenceRoomJDBC
         catch (SQLException se)
         {
             se.printStackTrace();
+        }
+        //成功则删除图片
+        if(affectedRow==1){
+            PhotoUtil.delete(photo);
         }
         return (affectedRow==1);
     }
