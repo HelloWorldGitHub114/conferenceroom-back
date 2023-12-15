@@ -1,9 +1,15 @@
 package com.xd11z.myserver.util;
 
 import com.xd11z.myserver.entity.ConferenceRoom;
-import com.xd11z.myserver.entity.Device;
+import com.xd11z.myserver.entity.ConferenceRoomForm;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ConferenceRoomJDBC
 {
@@ -302,6 +308,28 @@ public class ConferenceRoomJDBC
         return (res==1);
     }
 
+    public static boolean CheckPhotoNull(int id)
+    {
+        String QUERY = "SELECT PhotoPath FROM ConferenceRoom Where RoomID = ?";
+        String res = null;
+        try (Connection connection = DriverManager.getConnection(JDBCconnection.connectionurl))
+        {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY))
+            {
+                preparedStatement.setInt(1, id);
+                try (ResultSet rs = preparedStatement.executeQuery())
+                {
+                    if (rs.next()) res=rs.getString("PhotoPath");
+                }
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        boolean b = res == null || res == "";
+        return b;
+    }
+
     public static int GiveID()
     {
         String QUERY = "SELECT Max(roomID) as cnt FROM ConferenceRoom";
@@ -322,15 +350,34 @@ public class ConferenceRoomJDBC
         return cnt;
     }
 
-    public static boolean UpdateInfo(ConferenceRoom conferenceRoom)
+    public static boolean UpdateInfo(ConferenceRoomForm conferenceRoom, MultipartFile photo)
     {
         String UPDATEState = """    
                     UPDATE ConferenceRoom
-                    SET RoomNo = ?, RoomName = ?, RoomFloor = ?, Size = ?, Area = ? ,used = ?
+                    SET RoomNo = ?, RoomName = ?, RoomFloor = ?, Size = ?, Area = ? , PhotoPath = ?, used = ?
                     WHERE RoomID = ?;
                     """;
         PreparedStatement stmt = null;
         Connection conn = null;
+        String photoPath = null;
+        //如果本来就有图片链接则直接存；有新图片则改变
+        if(photo != null){
+            try{
+                photoPath = PhotoUtil.getPath(photo);//把照片数据存到本地并获取成图片路径
+                //如果原来有图片，需要删除原来的图片
+                if(CheckPhotoNull(conferenceRoom.roomID) == false){
+                    if (PhotoUtil.delete(conferenceRoom.roomPhoto)) logger.write("成功删除图片:" + conferenceRoom.roomPhoto);
+                    else logger.write("删除图片失败:" + conferenceRoom.roomPhoto);
+                }
+            }catch (Exception e){
+                photoPath = conferenceRoom.roomPhoto;
+                e.printStackTrace();
+            }
+        }else{
+            photoPath = conferenceRoom.roomPhoto;
+        }
+
+
         try {
             conn = DriverManager.getConnection(JDBCconnection.connectionurl);
             stmt = conn.prepareStatement(UPDATEState);
@@ -339,8 +386,9 @@ public class ConferenceRoomJDBC
             stmt.setInt(3,conferenceRoom.roomFloor);
             stmt.setInt(4,conferenceRoom.roomSize);
             stmt.setFloat(5,conferenceRoom.roomArea);
-            stmt.setInt(6,conferenceRoom.roomState);
-            stmt.setInt(7,conferenceRoom.roomID);
+            stmt.setString(6,photoPath);
+            stmt.setInt(7,conferenceRoom.roomState);
+            stmt.setInt(8,conferenceRoom.roomID);
             stmt.executeUpdate();
             return true;
         }
@@ -349,14 +397,25 @@ public class ConferenceRoomJDBC
             se.printStackTrace();
             return false;
         }
+        catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }
     }
 
-    public static boolean InsertInfo(ConferenceRoom conferenceRoom)
+    public static boolean InsertInfo(ConferenceRoomForm conferenceRoom, MultipartFile photo)
     {
         int affectedRow=0;
-        String UPDATEState ="INSERT INTO ConferenceRoom VALUES (?,?,?,?,?,?,null,null,?)";
+        String UPDATEState ="INSERT INTO ConferenceRoom VALUES (?,?,?,?,?,?,?,?,1)";
         PreparedStatement stmt = null;
         Connection conn = null;
+        String photoPath = null;
+        try{
+            photoPath = PhotoUtil.getPath(photo);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
         try {
             conn = DriverManager.getConnection(JDBCconnection.connectionurl);
             stmt = conn.prepareStatement(UPDATEState);
@@ -366,13 +425,18 @@ public class ConferenceRoomJDBC
             stmt.setInt(4,conferenceRoom.roomFloor);
             stmt.setInt(5,conferenceRoom.roomSize);
             stmt.setFloat(6,conferenceRoom.roomArea);
-            stmt.setInt(7,conferenceRoom.roomState);
+            stmt.setString(7,conferenceRoom.roomDescription);
+            stmt.setString(8,photoPath);
+            //stmt.setInt(9,conferenceRoom.roomState;
             affectedRow=stmt.executeUpdate();
         }
         catch (SQLException se)
         {
             se.printStackTrace();
+            PhotoUtil.delete(photoPath);//取消加入的图片
+            return false;
         }
+
         return (!(affectedRow==0));
     }
 
@@ -416,6 +480,8 @@ public class ConferenceRoomJDBC
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
+        //缓存图片链接
+        String photo = SearchByID(id).roomPhoto;
         try {
             conn = DriverManager.getConnection(JDBCconnection.connectionurl);
             stmt = conn.prepareStatement(QUERY_ROOM);
@@ -425,6 +491,10 @@ public class ConferenceRoomJDBC
         catch (SQLException se)
         {
             se.printStackTrace();
+        }
+        //成功则删除图片
+        if(affectedRow==1){
+            PhotoUtil.delete(photo);
         }
         return (affectedRow==1);
     }

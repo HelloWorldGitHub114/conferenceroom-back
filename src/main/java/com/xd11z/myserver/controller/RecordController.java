@@ -127,6 +127,7 @@ public class RecordController {
     @DeleteMapping("/deleteby/{applyId}")//管理员删除申请
     public ServerResponse deleteByIdAdmin(@PathVariable("applyId") Integer applyId) {
         int rowsAffected = RecordJDBC.deleteRecordById(applyId);
+
         if (rowsAffected > 0) {
             return ServerResponse.success("删除成功");
         } else {
