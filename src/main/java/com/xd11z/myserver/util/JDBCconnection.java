@@ -8,7 +8,4 @@ public class JDBCconnection {
 
 
 
-
-
-
 }

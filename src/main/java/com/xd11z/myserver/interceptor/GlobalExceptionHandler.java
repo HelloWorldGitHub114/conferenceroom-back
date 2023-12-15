@@ -18,6 +18,8 @@ public class GlobalExceptionHandler {
         if (msg == null || msg.equals("")) {
             msg = "服务器出错";
         }
+        if(msg.contains("token"))
+            return ServerResponse.fail(401,msg,null);
         //也许这里应该依据不同的情况返回不同的code?
         return ServerResponse.fail(500, msg, null);
     }

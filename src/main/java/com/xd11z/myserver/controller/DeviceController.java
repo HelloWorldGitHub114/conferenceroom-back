@@ -1,20 +1,20 @@
 package com.xd11z.myserver.controller;
 
 
-import com.alibaba.fastjson.JSON;
-import com.xd11z.myserver.entity.*;
-import com.xd11z.myserver.util.*;
+import com.xd11z.myserver.annotation.UserToken;
+import com.xd11z.myserver.entity.Device;
+import com.xd11z.myserver.entity.ServerResponse;
+import com.xd11z.myserver.util.DeviceJDBC;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/device")
 public class DeviceController {
 
+    @UserToken(role = "admin")
     @PostMapping("/add")
     public ServerResponse addOrUpdate(@RequestBody Device device) {
         try {
@@ -63,6 +63,7 @@ public class DeviceController {
     }
 
 
+    @UserToken(role = "admin")
     @DeleteMapping("/delete/{did}")
     public ServerResponse delete(@PathVariable("did") Integer did) {
         int rowsAffected = DeviceJDBC.deleteDeviceById(did);
@@ -75,18 +76,20 @@ public class DeviceController {
     }
 
 
+    @UserToken
     @GetMapping("/listby/{roomId}")
     public ServerResponse listByRoomId(@PathVariable("roomId") Integer roomId){
         List<Device> devices = DeviceJDBC.listByRoomid(roomId);
         return ServerResponse.success(devices);
     }
-
+    @UserToken
     @GetMapping("/listbyapply/{roomId}")
     public ServerResponse listByRoomIdForUsers(@PathVariable("roomId") Integer roomId){
         List<Device> devices = DeviceJDBC.listByRoomidForUsers(roomId);
         return ServerResponse.success(devices);
     }
 
+    @UserToken(role = "admin")
     @PutMapping("/changenumber")
     public ServerResponse changeNumber(@RequestBody Map<String, Object> map) {
         try {

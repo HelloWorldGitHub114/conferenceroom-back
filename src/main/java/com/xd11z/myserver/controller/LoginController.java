@@ -1,6 +1,7 @@
 package com.xd11z.myserver.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.xd11z.myserver.annotation.PassToken;
 import com.xd11z.myserver.entity.ServerResponse;
 import com.xd11z.myserver.entity.User;
 import com.xd11z.myserver.entity.UserInfo;
@@ -25,6 +26,7 @@ public class LoginController {
      * @param userLogin 前端传入的登录信息，包括username和password
      * @return 服务器应答类
      */
+    @PassToken
     @PostMapping(value = "/login")
     public ServerResponse loginIn(@RequestBody UserLogin userLogin, HttpServletResponse response) {
         //记录到日志文件中，可以不写

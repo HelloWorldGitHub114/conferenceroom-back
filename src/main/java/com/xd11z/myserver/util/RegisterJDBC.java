@@ -1,9 +1,7 @@
 package com.xd11z.myserver.util;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import com.xd11z.myserver.entity.User;
+
+import java.sql.*;
 
 public class RegisterJDBC {
     // 查询用户是否存在
@@ -46,18 +44,27 @@ public class RegisterJDBC {
 
 
     // 插入新用户
-    public static void insertUser(String username, String password) {
+    public static User insertUser(String username, String password) {
         try (Connection connection = DriverManager.getConnection(JDBCconnection.connectionurl)) {
             String query = "INSERT INTO Users (UserID, Username, Password, Role) VALUES (?, ?, ?, 0)";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
                 String newUserID = generateNewUserID();
                 preparedStatement.setString(1, newUserID);
                 preparedStatement.setString(2, username);
                 preparedStatement.setString(3, password);
                 preparedStatement.executeUpdate();
+
+                // 获取生成的主键值（用户ID）
+                ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    String userID = generatedKeys.getString(1);
+                    return new User(userID, username, password, "0");
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return null;
     }
+
 }
