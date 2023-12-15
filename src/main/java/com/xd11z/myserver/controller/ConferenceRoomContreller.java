@@ -7,9 +7,13 @@ import com.xd11z.myserver.entity.ConferenceRoom;
 import com.xd11z.myserver.entity.ConferenceRoomForm;
 import com.xd11z.myserver.entity.ServerResponse;
 import com.xd11z.myserver.util.ConferenceRoomJDBC;
+import com.xd11z.myserver.util.RecordJDBC;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +34,7 @@ public class ConferenceRoomContreller
     }
 
     @UserToken
-    @GetMapping("listallonstate")//展示所有会议室（可用）
+    @GetMapping("/listallonstate")//展示所有会议室（可用）
     public  ServerResponse Getallonstate()
     {
         List<ConferenceRoom> conferenceRooms = ConferenceRoomJDBC.SearchAll(1);
@@ -38,7 +42,7 @@ public class ConferenceRoomContreller
     }
 
     @UserToken
-    @GetMapping("getconditionsonstate")//展示申请会议室页面的下拉搜索框（只返回可用的）
+    @GetMapping("/getconditionsonstate")//展示申请会议室页面的下拉搜索框（只返回可用的）
     public ServerResponse GetConditionsOnstate()
     {
         List<Map<String,Integer>> floors = ConferenceRoomJDBC.GetDistinctFloor(1);
@@ -93,13 +97,28 @@ public class ConferenceRoomContreller
 
     @GetMapping("/listbyonstate")//按照条件筛选会议室（默认可用）
     public ServerResponse listAllOnState(@RequestParam(required = false) String roomFloor,
-                                         @RequestParam(required = false) String roomSize)
+                                         @RequestParam(required = false) String roomSize,
+                                         @RequestParam("searchStartTime") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime startTime,
+                                         @RequestParam("searchEndTime") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endTime)
     {
+        System.out.println("StartTime: " + startTime);
+        System.out.println("EndTime: " + endTime);
         if(roomFloor==null) roomFloor="";
         if(roomSize==null) roomSize="";
         List<ConferenceRoom> res = ConferenceRoomJDBC.SearchOnConditon(roomFloor,roomSize,1);
+        Iterator<ConferenceRoom> iterator = res.listIterator();
+        while(iterator.hasNext())
+        {
+            ConferenceRoom c=iterator.next();
+            List<Integer> listApplyId = RecordJDBC.searchTimeConflict(c.roomID, startTime, endTime);
+            if (listApplyId.size() > 0) {
+                System.out.println(c.roomID);
+                iterator.remove();
+            }
+        }
         return ServerResponse.success(res);
     }
+
 
     @GetMapping("/listby")//按照条件筛选会议室
     public ServerResponse listAll(@RequestParam(required = false) String roomFloor,
