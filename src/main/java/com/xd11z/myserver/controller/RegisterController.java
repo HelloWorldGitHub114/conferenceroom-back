@@ -30,7 +30,9 @@ public class RegisterController {
         if (!RegisterJDBC.isUserExists(username)) {
             // 插入用户并获取用户信息
             User newUser = RegisterJDBC.insertUser(username, password);
-
+            StringBuilder msg = new StringBuilder("");
+            //判断userLogin是否正确
+            newUser = userService.CheckUserLogin(userLogin,msg);
             if (newUser != null) {
 
                 //在header附加上token，以后前端可以拿着这个来访问后端了（其实这里放在数据包里也可以）
