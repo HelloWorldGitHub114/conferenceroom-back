@@ -58,7 +58,7 @@ public class RegisterJDBC {
                 ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
                 if (generatedKeys.next()) {
                     String userID = generatedKeys.getString(1);
-                    return new User(userID, username, password, "0");
+                    return new User(userID, username, password, "user");
                 }
             }
         } catch (SQLException e) {

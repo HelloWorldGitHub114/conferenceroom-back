@@ -23,24 +23,23 @@ public class RegisterController {
     @Autowired
     UserService userService;
     @PostMapping(value = "/register")
-    public ServerResponse userRegister(@RequestBody Map<String, String> request) {
-        String username = request.get("username");
-        String password = request.get("password");
+    public ServerResponse userRegister(@RequestBody UserLogin userLogin, HttpServletResponse response) {
+        String username = userLogin.username;
+        String password = userLogin.password;
 
         if (!RegisterJDBC.isUserExists(username)) {
             // 插入用户并获取用户信息
             User newUser = RegisterJDBC.insertUser(username, password);
 
             if (newUser != null) {
-                // 生成token
-                String token = TokenTool.getToken(newUser);
-                // 创建包含用户信息和令牌的响应
-                Map<String, Object> responseData = new HashMap<>();
-                responseData.put("token", token);
-                responseData.put("username", newUser.getUsername());
-                responseData.put("role", newUser.getRole());
-                responseData.put("userID", newUser.getUserID());
-                return ServerResponse.success(responseData);
+
+                //在header附加上token，以后前端可以拿着这个来访问后端了（其实这里放在数据包里也可以）
+                response.setHeader("Authorization", TokenTool.getToken(newUser));
+                //将Authorization在响应首部暴露出来
+                response.setHeader("Access-control-Expose-Headers", "Authorization");
+                //成功可以new一个用户信息对象，然后存到服务器应答包中返回
+                UserInfo userInfo = newUser.getInfo();
+                return ServerResponse.success(userInfo);
             } else {
                 // 插入失败，返回失败信息
                 return ServerResponse.fail("注册失败！");
