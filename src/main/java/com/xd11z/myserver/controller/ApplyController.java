@@ -1,19 +1,14 @@
 package com.xd11z.myserver.controller;
-import com.alibaba.fastjson.JSON;
 
-import com.xd11z.myserver.entity.*;
-import com.xd11z.myserver.util.*;
+import com.xd11z.myserver.entity.ConRApplyRecord;
+import com.xd11z.myserver.entity.ServerResponse;
+import com.xd11z.myserver.util.RecordJDBC;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
-import java.time.ZoneOffset;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.*;
-import java.time.temporal.ChronoUnit;
+import java.util.List;
 @RestController
 @RequestMapping("/apply")
 public class ApplyController {
@@ -34,7 +29,6 @@ public class ApplyController {
         }
     }
 
-    //有问题，不管什么时间段都会冲突
     @GetMapping("/searchtimeconflict/{roomId}/{startTime}/{endTime}")
     public ServerResponse searchtimeconflict(
             @PathVariable("roomId") Integer roomId,
@@ -48,10 +42,10 @@ public class ApplyController {
             if (startTime.isBefore(now)) {
                 return ServerResponse.fail("开始时间不能早于当前时间！");
             }
-
-            System.out.println("RoomId: " + roomId);
-            System.out.println("StartTime: " + startTime);
-            System.out.println("EndTime: " + endTime);
+            //结束时间不能早于开始时间
+            if (endTime.isBefore(startTime)) {
+                return ServerResponse.fail("结束时间不能早于开始时间！");
+            }
 
             List<Integer> listApplyId = RecordJDBC.searchTimeConflict(roomId, startTime, endTime);
 

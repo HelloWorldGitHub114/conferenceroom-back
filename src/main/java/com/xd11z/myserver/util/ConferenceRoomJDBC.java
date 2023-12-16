@@ -326,7 +326,7 @@ public class ConferenceRoomJDBC
         catch (SQLException e) {
             e.printStackTrace();
         }
-        boolean b = res == null || res == "";
+        boolean b = (res == null || res.equals(""));
         return b;
     }
 

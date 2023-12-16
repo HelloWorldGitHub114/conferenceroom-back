@@ -36,7 +36,7 @@ public class LoginController {
         User user = userService.CheckUserLogin(userLogin,msg);
         if(user!=null)
         {
-            //在header附加上token，以后前端可以拿着这个来访问后端了（其实这里放在数据包里也可以）
+            //在header附加上token，以后前端可以拿着这个来访问后端了
             response.setHeader("Authorization", TokenTool.getToken(user));
             //将Authorization在响应首部暴露出来
             response.setHeader("Access-control-Expose-Headers", "Authorization");

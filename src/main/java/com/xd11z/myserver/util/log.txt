@@ -179,9 +179,18 @@
 2023-12-14 23:28:40   {"roomArea":50.0,"roomDescription":"Executive boardroom","roomFloor":3,"roomID":3,"roomName":"Boardroom C","roomNo":"301","roomPhoto":"http://localhost:8080/photo/202312142238530b06d4d79e464069ac30806f32b752e3.png","roomSize":20,"roomState":0}
 2023-12-14 23:28:40   CheckPhotonullfalse
 2023-12-14 23:28:40   删除图片失败:http://localhost:8080/photo/202312142238530b06d4d79e464069ac30806f32b752e3.png
+2023-12-15 15:08:49   成功删除图片:http://localhost:8080/photo/202312142328403d019b0d7870411c99bc25546b816d0a.jpg
+2023-12-15 16:27:50   {"password":"123456","username":"admin"}
+2023-12-15 16:36:48   {"password":"123456","username":"admin"}
+2023-12-15 17:02:56   {"password":"123456","username":"uesr"}
+2023-12-15 17:03:02   {"password":"123456","username":"user"}
+2023-12-15 17:16:20   {"password":"123456","username":"user"}
+2023-12-15 23:20:55   {"password":"123445","username":"admin"}
+2023-12-15 23:21:02   {"password":"123456","username":"admin"}
 2023-12-15 22:50:56   {"password":"21009200496","username":"yty"}
 2023-12-16 00:04:34   UserRecall:19
 2023-12-16 00:04:42   UserDeleted:12
-2023-12-16 00:05:45   ɾ��ͼƬʧ��:/photos/conference_room_a.jpg
+2023-12-16 00:05:45   ɾ��ͼƬʧ��:/photos/conference_room_a.jpg
 2023-12-16 11:46:56   {"password":"21009200496","username":"yty"}
 2023-12-16 11:50:27   {"password":"111111","username":"8525852"}
+2023-12-16 12:24:23   UserDeleted:1
