@@ -1,5 +1,6 @@
 package com.xd11z.myserver.controller;
 
+import com.xd11z.myserver.annotation.UserToken;
 import com.xd11z.myserver.entity.ConRApplyRecord;
 import com.xd11z.myserver.entity.ServerResponse;
 import com.xd11z.myserver.util.RecordJDBC;
@@ -12,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/apply")
 public class ApplyController {
+    @UserToken
     @PostMapping("/add")
     public ServerResponse add(@RequestBody ConRApplyRecord record){
         try{
@@ -29,6 +31,7 @@ public class ApplyController {
         }
     }
 
+    @UserToken
     @GetMapping("/searchtimeconflict/{roomId}/{startTime}/{endTime}")
     public ServerResponse searchtimeconflict(
             @PathVariable("roomId") Integer roomId,
@@ -60,7 +63,4 @@ public class ApplyController {
             return ServerResponse.fail("日期时间格式错误");
         }
     }
-
-
-
 }

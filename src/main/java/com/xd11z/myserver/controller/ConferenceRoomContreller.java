@@ -95,6 +95,7 @@ public class ConferenceRoomContreller
         else return ServerResponse.success("");
     }
 
+    @UserToken
     @GetMapping("/listbyonstate")//按照条件筛选会议室（默认可用）
     public ServerResponse listAllOnState(@RequestParam(required = false) String roomFloor,
                                          @RequestParam(required = false) String roomSize,
@@ -120,6 +121,7 @@ public class ConferenceRoomContreller
     }
 
 
+    @UserToken
     @GetMapping("/listby")//按照条件筛选会议室
     public ServerResponse listAll(@RequestParam(required = false) String roomFloor,
                                   @RequestParam(required = false) String roomSize,
@@ -132,6 +134,7 @@ public class ConferenceRoomContreller
         return ServerResponse.success(res);
     }
 
+    @UserToken(role = "admin")
     @DeleteMapping("/delete/{roomID}")//删除会议室
     public ServerResponse DeleteRoom(@PathVariable(value = "roomID") int ID) {
         boolean flg = ConferenceRoomJDBC.DeleteRoom(ID);

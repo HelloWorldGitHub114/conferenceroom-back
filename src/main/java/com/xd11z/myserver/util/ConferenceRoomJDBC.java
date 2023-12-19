@@ -354,7 +354,7 @@ public class ConferenceRoomJDBC
     {
         String UPDATEState = """    
                     UPDATE ConferenceRoom
-                    SET RoomNo = ?, RoomName = ?, RoomFloor = ?, Size = ?, Area = ? , PhotoPath = ?, used = ?
+                    SET RoomNo = ?, RoomName = ?, RoomFloor = ?, Size = ?, Area = ? ,Description = ?, PhotoPath = ?, used = ?
                     WHERE RoomID = ?;
                     """;
         PreparedStatement stmt = null;
@@ -386,9 +386,10 @@ public class ConferenceRoomJDBC
             stmt.setInt(3,conferenceRoom.roomFloor);
             stmt.setInt(4,conferenceRoom.roomSize);
             stmt.setFloat(5,conferenceRoom.roomArea);
-            stmt.setString(6,photoPath);
-            stmt.setInt(7,conferenceRoom.roomState);
-            stmt.setInt(8,conferenceRoom.roomID);
+            stmt.setString(6,conferenceRoom.roomDescription);
+            stmt.setString(7,photoPath);
+            stmt.setInt(8,conferenceRoom.roomState);
+            stmt.setInt(9,conferenceRoom.roomID);
             stmt.executeUpdate();
             return true;
         }

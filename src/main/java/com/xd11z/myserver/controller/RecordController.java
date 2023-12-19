@@ -1,5 +1,6 @@
 package com.xd11z.myserver.controller;
 
+import com.xd11z.myserver.annotation.UserToken;
 import com.xd11z.myserver.entity.ConRApplyRecord;
 import com.xd11z.myserver.entity.ServerResponse;
 import com.xd11z.myserver.util.RecordJDBC;
@@ -20,6 +21,7 @@ import java.util.Map;
 @RequestMapping("/record")
 public class RecordController {
 
+    @UserToken
     @GetMapping("/listbyconditions/{auditState}/{currentPage}/{deleted}")
     public ServerResponse listByConditions(@PathVariable("auditState") Integer auditState,
                                            @PathVariable("currentPage") Integer currentPage,
@@ -39,6 +41,7 @@ public class RecordController {
         }
     }
 
+    @UserToken
     @GetMapping("/gettotal/{auditState}/{deleted}")
     public ServerResponse gettotalbyadmin(@PathVariable("auditState") Integer auditState,
                                            @PathVariable("deleted") Integer deleted) {
@@ -51,6 +54,7 @@ public class RecordController {
         }
     }
 
+    @UserToken
     @GetMapping("/gettotalbyuser/{userID}/{auditState}")
     public ServerResponse gettotalbyuser(@PathVariable("userID") String userID,
                                          @PathVariable("auditState") Integer auditState) {
@@ -81,6 +85,7 @@ public class RecordController {
 
 
 
+    @UserToken(role = "admin")
     @PutMapping("/changeauditstate")
     public ServerResponse changeAuditState(@RequestBody Map<String, Object> map) throws ParseException {
         if ((Integer) map.get("auditState") == 1) {
@@ -125,6 +130,7 @@ public class RecordController {
     }
 
 
+    @UserToken(role = "admin")
     @DeleteMapping("/deleteby/{applyId}")//管理员删除申请
     public ServerResponse deleteByIdAdmin(@PathVariable("applyId") Integer applyId) {
         int rowsAffected = RecordJDBC.deleteRecordById(applyId);
@@ -136,6 +142,7 @@ public class RecordController {
         }
     }
 
+    @UserToken
     @DeleteMapping("/delete/{applyId}")//用户删除申请
     public ServerResponse deleteByIdUser(@PathVariable("applyId") Integer applyId)
     {
@@ -151,6 +158,7 @@ public class RecordController {
 
 
 
+    @UserToken
     @PutMapping("/recallapply")//用户撤销申请
     public ServerResponse changeAuditState(@RequestBody ConRApplyRecord r)
     {

@@ -1,27 +1,21 @@
 package com.xd11z.myserver.controller;
-import com.alibaba.fastjson.JSON;
+
 import com.xd11z.myserver.annotation.PassToken;
 import com.xd11z.myserver.entity.ServerResponse;
 import com.xd11z.myserver.entity.User;
 import com.xd11z.myserver.entity.UserInfo;
 import com.xd11z.myserver.entity.UserLogin;
-import com.xd11z.myserver.service.UserService;
+import com.xd11z.myserver.util.RegisterJDBC;
 import com.xd11z.myserver.util.TokenTool;
-import com.xd11z.myserver.util.logger;
+import com.xd11z.myserver.util.UserLoginJDBC;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import com.xd11z.myserver.util.*;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
-
 public class RegisterController {
-    @Autowired
-    UserService userService;
+    @PassToken
     @PostMapping(value = "/register")
     public ServerResponse userRegister(@RequestBody UserLogin userLogin, HttpServletResponse response) {
         String username = userLogin.username;
@@ -32,7 +26,7 @@ public class RegisterController {
             User newUser = RegisterJDBC.insertUser(username, password);
             StringBuilder msg = new StringBuilder("");
             //判断userLogin是否正确
-            newUser = userService.CheckUserLogin(userLogin,msg);
+            newUser = UserLoginJDBC.CheckUserLogin(userLogin,msg);
             if (newUser != null) {
 
                 //在header附加上token，以后前端可以拿着这个来访问后端了（其实这里放在数据包里也可以）
