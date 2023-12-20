@@ -1,5 +1,6 @@
-package com.xd11z.myserver.util;
+package com.xd11z.myserver.repository;
 import com.xd11z.myserver.entity.*;
+import com.xd11z.myserver.util.StringUtil;
 
 import java.lang.reflect.Field;
 import java.sql.*;

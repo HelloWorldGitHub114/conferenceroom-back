@@ -1,7 +1,9 @@
-package com.xd11z.myserver.util;
+package com.xd11z.myserver.repository;
 
 import com.xd11z.myserver.entity.ConferenceRoom;
 import com.xd11z.myserver.entity.ConferenceRoomForm;
+import com.xd11z.myserver.util.PhotoUtil;
+import com.xd11z.myserver.util.logger;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

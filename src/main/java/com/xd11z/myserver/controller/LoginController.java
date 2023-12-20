@@ -7,7 +7,7 @@ import com.xd11z.myserver.entity.User;
 import com.xd11z.myserver.entity.UserInfo;
 import com.xd11z.myserver.entity.UserLogin;
 import com.xd11z.myserver.util.TokenTool;
-import com.xd11z.myserver.util.UserLoginJDBC;
+import com.xd11z.myserver.repository.UserLoginJDBC;
 import com.xd11z.myserver.util.logger;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.PostMapping;

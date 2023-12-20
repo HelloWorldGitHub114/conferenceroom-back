@@ -1,4 +1,4 @@
-package com.xd11z.myserver.util;
+package com.xd11z.myserver.repository;
 
 public class JDBCconnection {
 

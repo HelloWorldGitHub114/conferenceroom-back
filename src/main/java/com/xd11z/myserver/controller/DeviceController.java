@@ -4,7 +4,7 @@ package com.xd11z.myserver.controller;
 import com.xd11z.myserver.annotation.UserToken;
 import com.xd11z.myserver.entity.Device;
 import com.xd11z.myserver.entity.ServerResponse;
-import com.xd11z.myserver.util.DeviceJDBC;
+import com.xd11z.myserver.repository.DeviceJDBC;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

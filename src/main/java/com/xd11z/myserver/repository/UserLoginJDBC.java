@@ -1,4 +1,4 @@
-package com.xd11z.myserver.util;
+package com.xd11z.myserver.repository;
 
 import com.xd11z.myserver.entity.User;
 import com.xd11z.myserver.entity.UserLogin;

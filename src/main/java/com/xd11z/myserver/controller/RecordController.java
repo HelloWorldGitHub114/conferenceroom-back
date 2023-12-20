@@ -3,7 +3,7 @@ package com.xd11z.myserver.controller;
 import com.xd11z.myserver.annotation.UserToken;
 import com.xd11z.myserver.entity.ConRApplyRecord;
 import com.xd11z.myserver.entity.ServerResponse;
-import com.xd11z.myserver.util.RecordJDBC;
+import com.xd11z.myserver.repository.RecordJDBC;
 import com.xd11z.myserver.util.logger;
 import org.springframework.web.bind.annotation.*;
 
