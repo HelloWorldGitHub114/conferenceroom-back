@@ -5,9 +5,9 @@ import com.xd11z.myserver.entity.ServerResponse;
 import com.xd11z.myserver.entity.User;
 import com.xd11z.myserver.entity.UserInfo;
 import com.xd11z.myserver.entity.UserLogin;
+import com.xd11z.myserver.repository.LoginJDBC;
 import com.xd11z.myserver.repository.RegisterJDBC;
 import com.xd11z.myserver.util.TokenTool;
-import com.xd11z.myserver.repository.UserLoginJDBC;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,7 +26,7 @@ public class RegisterController {
             User newUser = RegisterJDBC.insertUser(username, password);
             StringBuilder msg = new StringBuilder("");
             //判断userLogin是否正确
-            newUser = UserLoginJDBC.CheckUserLogin(userLogin,msg);
+            newUser = LoginJDBC.CheckUserLogin(userLogin,msg);
             if (newUser != null) {
 
                 //在header附加上token，以后前端可以拿着这个来访问后端了（其实这里放在数据包里也可以）
