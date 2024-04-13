@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 public class test {
     @GetMapping("/hello")
     public String run(){
-        return "后端已启动";
+        return "后端已启动.....";
     }
 
     @UserToken
